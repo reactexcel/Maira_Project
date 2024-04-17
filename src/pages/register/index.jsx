@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button,  TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
-import { RegisterDetails, registerValidateSchema } from "../../utilities/validation";
+import { RegisterDetails, registerValidateSchema } from "../../utiles/validation";
 
 const Register = () => {
   const initialValues = {

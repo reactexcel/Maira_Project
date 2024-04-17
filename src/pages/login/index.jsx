@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
-import { LoginDetails, loginValidateSchema } from "../../utilities/validation";
+import { LoginDetails, loginValidateSchema } from "../../utiles/validation";
+
 
 const Login = () => {
   const initialValues = {
