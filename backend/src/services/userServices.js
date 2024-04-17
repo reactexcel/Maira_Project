@@ -17,6 +17,7 @@ module.exports.userRegisterSer = async (body) => {
       throw new Error(`User already registered with this Email`)
     }
 
+    
     if (password !== confirm_Password) {
       throw new Error(` confirm password is not matched`)
     }
