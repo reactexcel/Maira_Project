@@ -6,7 +6,7 @@ const mysql = require('mysql2/promise');
       host : "localhost",
       port : 3306 , 
       database : "maira",
-      user : process.env.Password ,
+      user : 'root' ,
       password : "root", 
      
     }
