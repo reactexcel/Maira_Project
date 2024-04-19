@@ -10,7 +10,9 @@ module.exports.sendMail = async (token)=>{
       throw Error(err)
      }
 
-     let pwdResetUrl = `http://localhost:8000/user/reset-pwd/${token}`
+   //  let pwdResetUrl = `http://116.202.210.102:8000/user/reset-pwd/${token}`
+   let  pwdResetUrl = `http://localhost:5173/create-password`
+  
   
 
      const transporter = nodemailer.createTransport({

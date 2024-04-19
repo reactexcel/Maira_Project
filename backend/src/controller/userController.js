@@ -11,7 +11,7 @@ module.exports.userRegister = async (req, res) => {
   catch (err) {
     res.status(400).json({
       status: false,
-      messsage: err.message
+      message: err.message
     })
   }
 }
