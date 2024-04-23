@@ -27,6 +27,12 @@ module.exports.getOrganizationRating = async () => {
 
             let ratingLevelData = await sqldb.query(`select * from ratinglevel where id = "${doc.ratingLevelId}"`);
             ratingLevelData = ratingLevelData[0][0];
+            let ratingLevelCheckData = await sqldb.query(`SELECT * FROM maira.ratinglevelcheck;`)
+            ratingLevelCheckData = ratingLevelCheckData[0]
+            let check = ratingLevelCheckData.filter(item => item.ratingLevelId === ratingLevelData.id);
+            ratingLevelData.check = check
+             
+
 
             if (ratingLevelData !== undefined) {
               let combinedObj = Object.assign({}, ratingScaleData, ratingLevelData);
@@ -40,9 +46,43 @@ module.exports.getOrganizationRating = async () => {
       })
     );
 
-      return data 
-    
+    return data
+
   } catch (err) {
-     throw new Error(err)
+    throw new Error(err)
   }
 };
+
+module.exports.ratingLevelCheckSer = async (body) => {
+  try {
+    let conn = await db.connection;
+    console.log(body);
+    let ratinglevelData = await conn.query(`SELECT * FROM ratinglevelcheck WHERE ratingLevelId = "${body.ratingLevelId}"`);
+    ratinglevelData = ratinglevelData[0];
+    if (ratinglevelData && ratinglevelData.length) {
+      let updateQuery = 'UPDATE ratinglevelcheck SET ';
+      let updateFields = [];
+      
+      if (body.doNotHave !== undefined) {
+        updateFields.push(`doNotHave = ${body.doNotHave ? 1 : 0}`);
+      }
+
+      if (body.needsImprovement !== undefined) {
+        updateFields.push(`needsImprovement = ${body.needsImprovement ? 1 : 0}`);
+      }
+      
+      if (body.ready !== undefined) {
+        updateFields.push(`ready = ${body.ready ? 1 : 0}`);
+      }
+
+      if (updateFields.length > 0) {
+        updateQuery += updateFields.join(', ') + ` WHERE ratingLevelId = "${body.ratingLevelId}"`;
+        console.log(updateQuery); 
+        await conn.query(updateQuery);
+      }
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
