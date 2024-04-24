@@ -2,6 +2,7 @@ const express = require('express')
 const db = require('./src/model/connection')
 const UserRouter = require('./src/routes/userRoutes')
 const organizationRouter =  require('./src/routes/orgRatingRouter')
+const dataQualityRouter = require('./src/routes/dataQualityRouter')
 var cors = require('cors')
 require('dotenv').config()
 
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 
 app.use('/user' , UserRouter)
 app.use('/organization' , organizationRouter)
+app.use('/data-quality' , dataQualityRouter)
 
 app.listen(port, async() => {
   try{
