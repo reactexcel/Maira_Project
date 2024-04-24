@@ -7,60 +7,47 @@ import {
   Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
-import {
-  RegisterDetails,
-  registerValidateSchema,
-} from "../../utiles/validation";
-import { Link, useNavigate } from "react-router-dom";
-import {toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ResetDetails, resetValidateSchema } from "../../utiles/validation";
+import { Link } from "react-router-dom";
 import ButtonComponent from "../../components/button";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
-const Register = () => {
-  const navigate = useNavigate();
+const ResetPassword = () => {
   const [loader, setLoader] = React.useState(false);
-
   const initialValues = {
-    firstName: "",
-    lastName: "",
     emailAddress: "",
-    password: "",
-    confirm_Password: "",
   };
 
   const formik = useFormik({
     initialValues: initialValues,
-    validationSchema: registerValidateSchema,
+    validationSchema: resetValidateSchema,
     onSubmit: async (values) => {
       console.log(values);
       setLoader(true);
       try {
         const response = await axios.post(
-          "/api/user/register",values);
+          "/api/user/forget-pwd",values);
+
         if (response.status) {
-          toast.success("Register Successfully", {
+          toast.success("Check Email For To Update Password", {
             position: "top-right",
             autoClose: 5000,
           });
+          localStorage.setItem("token", response.pwdToken.token);
           formik.resetForm();
-          navigate("/");
+          setLoader(false);
         } else {
-          toast.error(response.message, {
+          toast.error("Register UnSuccessfully", {
             position: "top-right",
             autoClose: 5000,
           });
           setLoader(false);
         }
-
-        console.log("Success:", response);
       } catch (error) {
-        console.error("Error:", error);
         setLoader(false);
-        toast.error("Server Issue", {
-          position: "top-right",
-          autoClose: 5000,
-        });
+        console.error("Error:", error);
       }
     },
   });
@@ -68,18 +55,19 @@ const Register = () => {
   return (
     <Stack
       sx={{
-        borderRadius: "20px",
+        // borderRadius: "20px",
         // backgroundImage:
         //   "linear-gradient(to right bottom, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.2))",
-        width: "100%",
+
         justifyContent: "center",
-        // boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
+        width: "100%",
+        //boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
       }}
     >
       <form
         style={{
-          // width: "100%",
-          // height: "100%",
+          //   width: "100%",
+          //   height: "100%",
           borderRadius: "20px",
           display: "flex",
           alignItems: "center",
@@ -103,16 +91,15 @@ const Register = () => {
             align="center"
             sx={{ fontSize: "calc(20px + 2vmin)", fontWeight: 600 }}
           >
-            Register
+            Reset Password
           </Typography>
-          {RegisterDetails.map((e, i) => (
+          {ResetDetails.map((e, i) => (
             <Stack sx={{ width: "100%" }} key={i}>
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              <Typography variant="body2" mb={1} sx={{ fontWeight: 600 }}>
                 {e.label}
               </Typography>
               <TextField
                 type={e.type}
-                key={i}
                 placeholder={`Enter ${e.label}`}
                 id={e.id}
                 variant="outlined"
@@ -130,23 +117,28 @@ const Register = () => {
               loader ? (
                 <CircularProgress size={"1.5rem"} color="inherit" />
               ) : (
-                "Register"
+                "Verify"
               )
             }
           />
-
-          <Typography variant="body2" align="center">
-            {" "}
-            Already Have Account?{" "}
+          <Stack direction="row" sx={{ justifyContent: "space-between" }}>
             <Link to="/" style={{ textDecoration: "none" }}>
-              {" "}
-              Login Here
+              <Typography variant="body2" align="center" mx={3}>
+                {" "}
+                Back to Login
+              </Typography>
             </Link>
-          </Typography>
+            <Link to="/register" style={{ textDecoration: "none" }}>
+              <Typography variant="body2" align="center">
+                {" "}
+                Back to Register
+              </Typography>
+            </Link>
+          </Stack>
         </Stack>
       </form>
     </Stack>
   );
 };
 
-export default Register;
+export default ResetPassword;
