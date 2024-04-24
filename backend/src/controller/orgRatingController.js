@@ -1,4 +1,4 @@
-const  { getOrganizationRating , ratingLevelCheckSer } = require('../services/orgRatingServices')
+const  { getOrganizationRating , ratingLevelCheckSer , ratingGraphSer } = require('../services/orgRatingServices')
 
 module.exports.organizationRatingController = async (req , res )=>{
  try{
@@ -23,6 +23,25 @@ module.exports.ratingLevelCheck = async (req , res )=>{
 
     res.status(200).json({
       status : true ,
+
+    })
+  }
+  catch(err){
+    res.status(400).json({
+      status : false ,
+      message : err.message
+    })
+  }
+}
+
+module.exports.ratingGraph = async (req , res )=>{
+  try{
+
+   let data = await ratingGraphSer()
+
+    res.status(200).json({
+      status : true ,
+      data 
 
     })
   }

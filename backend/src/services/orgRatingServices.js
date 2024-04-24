@@ -31,7 +31,7 @@ module.exports.getOrganizationRating = async () => {
             ratingLevelCheckData = ratingLevelCheckData[0]
             let check = ratingLevelCheckData.filter(item => item.ratingLevelId === ratingLevelData.id);
             ratingLevelData.check = check
-             
+
 
 
             if (ratingLevelData !== undefined) {
@@ -62,7 +62,7 @@ module.exports.ratingLevelCheckSer = async (body) => {
     if (ratinglevelData && ratinglevelData.length) {
       let updateQuery = 'UPDATE ratinglevelcheck SET ';
       let updateFields = [];
-      
+
       if (body.doNotHave !== undefined) {
         updateFields.push(`doNotHave = ${body.doNotHave ? 1 : 0}`);
       }
@@ -70,14 +70,14 @@ module.exports.ratingLevelCheckSer = async (body) => {
       if (body.needsImprovement !== undefined) {
         updateFields.push(`needsImprovement = ${body.needsImprovement ? 1 : 0}`);
       }
-      
+
       if (body.ready !== undefined) {
         updateFields.push(`ready = ${body.ready ? 1 : 0}`);
       }
 
       if (updateFields.length > 0) {
         updateQuery += updateFields.join(', ') + ` WHERE ratingLevelId = "${body.ratingLevelId}"`;
-        console.log(updateQuery); 
+        console.log(updateQuery, '=========>>>');
         await conn.query(updateQuery);
       }
     }
@@ -85,4 +85,31 @@ module.exports.ratingLevelCheckSer = async (body) => {
     throw err;
   }
 };
+
+module.exports.ratingGraphSer = async (body) => {
+  try {
+
+    let conn = await db.connection
+
+    let ratinglevelData = await conn.query(`select * from ratinglevelcheck `)
+    ratinglevelData = ratinglevelData[0]
+    let getLevelData = await Promise.all(ratinglevelData.map(async (data) => {
+      let scaleData = await conn.query(`select scaleName from ratingscale where id = "${data.ratingscaleId}"`)
+      scaleData = scaleData[0]
+      scaleData.map((e) => {
+        data.scalename = e.scaleName
+
+      })
+      return data
+    }))
+
+    return getLevelData
+
+
+
+  } catch (err) {
+    throw err;
+  }
+};
+
 

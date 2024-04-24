@@ -6,7 +6,7 @@ const mysql = require('mysql2/promise');
       port : 3306 , 
       database :'maira',
       user : 'root',
-      password :process.env.dbPassword, 
+      password :'root', 
      
     }
        let connection = (async()=>{
