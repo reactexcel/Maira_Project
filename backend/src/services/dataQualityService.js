@@ -18,3 +18,41 @@ module.exports.getDataQualityData = async () => {
 };
 
 
+module.exports.dataLevelcheckUpdate = async (levelCheckId , body) => {
+  try {
+    let conn = await db.connection;
+    let datalevelCheckData = await conn.query(`SELECT * FROM datalevelcheck WHERE id = "${levelCheckId}"`);
+    datalevelCheckData = datalevelCheckData[0] ;
+    if (datalevelCheckData && datalevelCheckData.length) {
+      let updateQuery = 'UPDATE datalevelcheck SET ';
+      let updateFields = [];
+
+      if (body.doNotHave !== undefined) {
+        updateFields.push(`doNotHave = ${body.doNotHave ? 1 : 0}`);
+      }
+
+      if (body.needsImprovement !== undefined) {
+        updateFields.push(`needsImprovement = ${body.needsImprovement ? 1 : 0}`);
+      }
+
+      if (body.ready !== undefined) {
+        updateFields.push(`ready = ${body.ready ? 1 : 0}`);
+      }
+
+      if (updateFields.length > 0) {
+        updateQuery += updateFields.join(', ') + ` WHERE id = "${levelCheckId}"`;     
+        await conn.query(updateQuery);
+      }
+
+    let sum = await conn.query(`select doNotHave , needsImprovement , ready ,  (doNotHave + needsImprovement + ready) AS totalBooleanSum from datalevelcheck where id = "${levelCheckId}"`)
+      sum =  sum[0][0].totalBooleanSum 
+     await conn.query(`update datalevelcheck set  sum = "${sum}" where id = "${levelCheckId}" `  ) 
+
+    }
+    
+
+  } catch (err) {
+    throw new Error(err)
+  }
+};
+

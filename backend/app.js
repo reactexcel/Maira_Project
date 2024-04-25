@@ -3,6 +3,7 @@ const db = require('./src/model/connection')
 const UserRouter = require('./src/routes/userRoutes')
 const organizationRouter =  require('./src/routes/orgRatingRouter')
 const dataQualityRouter = require('./src/routes/dataQualityRouter')
+const  reportData = require('./src/routes/reportRouter')
 var cors = require('cors')
 require('dotenv').config()
 
@@ -17,9 +18,10 @@ app.use(express.json())
 //   next()
 // });
 
-app.use('/user' , UserRouter)
-app.use('/organization' , organizationRouter)
-app.use('/data-quality' , dataQualityRouter)
+app.use('/api/user' , UserRouter)
+app.use('/api/organization' , organizationRouter)
+app.use('/api/data-quality' , dataQualityRouter)
+app.use('/api/data', reportData)
 
 app.listen(port, async() => {
   try{

@@ -56,9 +56,10 @@ module.exports.getOrganizationRating = async () => {
 module.exports.ratingLevelCheckSer = async (body) => {
   try {
     let conn = await db.connection;
-    console.log(body);
+    console.log(body , '==========');
     let ratinglevelData = await conn.query(`SELECT * FROM ratinglevelcheck WHERE ratingLevelId = "${body.ratingLevelId}"`);
     ratinglevelData = ratinglevelData[0];
+    console.log(ratinglevelData);
     if (ratinglevelData && ratinglevelData.length) {
       let updateQuery = 'UPDATE ratinglevelcheck SET ';
       let updateFields = [];
@@ -74,12 +75,16 @@ module.exports.ratingLevelCheckSer = async (body) => {
       if (body.ready !== undefined) {
         updateFields.push(`ready = ${body.ready ? 1 : 0}`);
       }
-
+  console.log(updateFields);
       if (updateFields.length > 0) {
         updateQuery += updateFields.join(', ') + ` WHERE ratingLevelId = "${body.ratingLevelId}"`;
         console.log(updateQuery, '=========>>>');
         await conn.query(updateQuery);
       }
+      let sum =  await conn.query(`select doNotHave , needsImprovement , ready ,  (doNotHave + needsImprovement + ready) AS totalBooleanSum from ratinglevelcheck where ratingLevelId = "${body.ratingLevelId}"`)
+         sum =  sum[0][0].totalBooleanSum 
+         console.log(sum , '=====')
+         await conn.query(`update ratinglevelcheck set  sum = "${sum}" where ratingLevelId = "${body.ratingLevelId}" `  )
     }
   } catch (err) {
     throw err;
