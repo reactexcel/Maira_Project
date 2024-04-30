@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ButtonComponent from "../../components/button";
-import axios from "axios";
+import { instance } from "../../axiosInstance/instance";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const Register = () => {
       console.log(values);
       setLoader(true);
       try {
-        const response = await axios.post(
+        const response = await instance.post(
           "/api/user/register",values);
         if (response.status) {
           toast.success("Register Successfully", {

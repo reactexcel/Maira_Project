@@ -14,10 +14,10 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
-import { CircularProgress, Stack } from "@mui/material";
-import { instance } from "../../../axiosInstance/instance";
+import {  Stack } from "@mui/material";
 import LineChartComp from "../../../components/Chart/LineChartComp";
-import axios from "axios";
+import Loading from "../../../components/Referesh/Loading";
+import { instance } from "../../../axiosInstance/instance";
 
 function Row(props) {
   const { row, setcheckLoading } = props;
@@ -29,9 +29,8 @@ function Row(props) {
       ratingLevelId: id,
       [type]: e.target.checked,
     };
-
     try {
-      await axios.post("/organization/rating-check", checkedData);
+      await instance.post("/api/organization/rating-check", checkedData);
     } catch (error) {
       console.log(error);
     }
@@ -180,29 +179,149 @@ Row.propTypes = {
     features: PropTypes.arrayOf(
       PropTypes.shape({
         scaleName: PropTypes.string.isRequired,
-        needsImprovement: PropTypes.string.isRequired,
-        doNotHave: PropTypes.string.isRequired,
-        ready: PropTypes.string.isRequired,
         ratingScale: PropTypes.string.isRequired,
+        doNotHave: PropTypes.string.isRequired,
+        needsImprovement: PropTypes.string.isRequired,
+        ready: PropTypes.string.isRequired,
+        check: PropTypes.arrayOf(
+          PropTypes.shape({
+            doNotHave: PropTypes.number.isRequired,
+            needsImprovement: PropTypes.number.isRequired,
+            ready: PropTypes.number.isRequired,
+          })
+        ).isRequired,
       })
     ).isRequired,
   }).isRequired,
+  setcheckLoading: PropTypes.func.isRequired,
 };
 
 export default function OrgLevelRatingTable() {
   const [fetchedData, setFetchedData] = React.useState(null);
   const [checkLoading, setcheckLoading] = React.useState(false);
+  const [graphState1, setGraphState1] = React.useState(null);
+  const [graphState2, setGraphState2] = React.useState(null);
+  const [graphState3, setGraphState3] = React.useState(null);
+  const [loading ,setLoading]=React.useState(true)
   React.useEffect(() => {
     const data = async () => {
+      setLoading(true)
       try {
-        const res = await axios.get("/api/organization/rating");
+        const res = await instance.get("/api/organization/rating");
         res.status === 200 && setFetchedData(res.data);
+      } catch (error) {
+        console.log(error);
+      }finally{setLoading(false)}
+    };
+    data();
+  }, [checkLoading]);
+  
+  function checkScaleStatus(scaleName, doNotHave, needImprovements, ready) {
+    if (doNotHave === 1) {
+      return { scaleName: scaleName, value: "Do not have" };
+    } else if (needImprovements === 1) {
+      return { scaleName: scaleName, value: "Needs improvements" };
+    } else if (ready === 1) {
+      return { scaleName: scaleName, value: "Ready" };
+    } else {
+      return { scaleName: scaleName, value: "False" };
+    }
+  }
+
+  function scaleStatusDecision(scaleName, doNotHave, needImprovements, ready) {
+    switch (scaleName) {
+      case "Adequate Coverage":
+        return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
+      case "Velocity":
+        return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
+      case "Harmonization":
+        return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
+      case "Management Use":
+        return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
+      case "Employee Participation":
+        return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
+      case "Personnel":
+        return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
+      case "Centralized Database":
+        return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
+    default:
+        return "Invalid scale name";
+    }
+  }
+  
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await instance.get("/api/organization/rating-graph");
+        if (res.status === 200) {
+          processGraphData(res.data.data);
+        }
       } catch (error) {
         console.log(error);
       }
     };
-    data();
+  
+    const processGraphData = (data) => {
+      let sum1 = [0, 0, 0];
+      let sum2 = [0, 0];
+      let sum3 = [0, 0];
+      
+      data.forEach((item) => {
+        const result = scaleStatusDecision(
+          item.scalename,
+          item.doNotHave,
+          item.needsImprovement,
+          item.ready
+        );
+        switch (result.scaleName) {
+          case "Adequate Coverage":
+            sum1[0] = getResultValue(result.value);
+            break;
+          case "Velocity":
+            sum1[1] = getResultValue(result.value);
+            break;
+          case "Harmonization":
+            sum1[2] = getResultValue(result.value);
+            break;
+            case "Management Use":
+              sum2[0] = getResultValue(result.value);
+              break;
+            case "Employee Participation":
+              sum2[1] = getResultValue(result.value);
+              break;
+              case "Personnel":
+                sum3[0] = getResultValue(result.value);
+                break;
+              case "Centralized Database":
+                sum3[1] = getResultValue(result.value);
+                break;
+          default:
+            break;
+        }
+      });
+      setGraphState1(sum1);
+      setGraphState2(sum2);
+      setGraphState3(sum3);
+    };
+  
+    const getResultValue = (value) => {
+      switch (value) {
+        case "Do not have":
+          return 0;
+        case "Needs improvements":
+          return 1;
+        case "Ready":
+          return 2;
+        default:
+          return 0;
+      }
+    };
+  
+    fetchData();
   }, [checkLoading]);
+  if ( loading || checkLoading) return <Loading/>
+
   return (
     <Stack spacing={2}>
       <CardComponent text={"Org Level Rating"} />
@@ -218,7 +337,7 @@ export default function OrgLevelRatingTable() {
           variant="subtitle1"
           sx={{ fontSize: "22px", fontWeight: 600 }}
         >
-          Rate the level's data readiness for the following organizational
+          Rate the level&apos;s data readiness for the following organizational
           success factors:{" "}
         </Typography>
         <TableContainer
@@ -243,31 +362,11 @@ export default function OrgLevelRatingTable() {
           >
             <TableHead>
               <TableRow sx={{ bgcolor: "#a7e5fbcc" }}>
-                <TableCell>
-                  {checkLoading && (
-                    <CircularProgress
-                      sx={{ color: "inherit", width: "10px" }}
-                    />
-                  )}
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
-                >
-                  Rating Scale
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
-                >
-                  Do Not Have
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
-                >
-                  Ready
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
-                >
+                <TableCell></TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Rating Scale</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Do Not Have</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Ready</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
                   Needs Improvement
                 </TableCell>
               </TableRow>
@@ -276,6 +375,7 @@ export default function OrgLevelRatingTable() {
               {fetchedData?.data?.map((row) => (
                 <Row
                   setcheckLoading={setcheckLoading}
+                  
                   key={row?.title}
                   row={row}
                 />
@@ -296,42 +396,33 @@ export default function OrgLevelRatingTable() {
         <Typography variant="h5" sx={{ textAlign: "center" }}>
           Diagnostic Graphics
         </Typography>
-        <Stack
-          direction={{ md: "row", xs: "column" }}
-          sx={{ justifyContent: "space-between", alignItems: "center" }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap ",
+          }}
         >
           <LineChartComp
             labels={["Adequate Coverage", "Velocity", "Harmonization"]}
             yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
             datasetsLabel={"Rules and Operations"}
-            dataSet={[
-              fetchedData?.data[0]?.features[0]?.check[0]?.doNotHave,
-              fetchedData?.data[0]?.features[0]?.check[0]?.needsImprovement,
-              fetchedData?.data[0]?.features[0]?.check[0]?.ready,
-              
-            ]}
+            dataSet={graphState1}
           />
           <LineChartComp
             labels={["Personnel", "Centralized Database"]}
             datasetsLabel={"Foundational Infrastructure"}
             yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
-            dataSet={[
-              fetchedData?.data[1]?.features[1]?.check[0]?.doNotHave,
-              fetchedData?.data[1]?.features[1]?.check[0]?.needsImprovement,
-              fetchedData?.data[1]?.features[1]?.check[0]?.ready,
-            ]}
+            dataSet={graphState2}
           />
           <LineChartComp
             labels={["Employee Participation", "Management Use"]}
             datasetsLabel={"Measurement Culture"}
             yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
-            dataSet={[
-              fetchedData?.data[2]?.features[1]?.check[0]?.doNotHave,
-              fetchedData?.data[2]?.features[1]?.check[0]?.needsImprovement,
-              fetchedData?.data[2]?.features[1]?.check[0]?.ready,
-            ]}
+            dataSet={graphState3}
           />
-        </Stack>
+        </Box>
       </Stack>
     </Stack>
   );

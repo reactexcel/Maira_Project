@@ -23,37 +23,25 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
-import { Stack } from "@mui/material";
+import {  Stack } from "@mui/material";
+import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
-import axios from "axios";
-
-function createData(name, calories, fat, carbs, protein, price) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-    price,
-    history: [
-      {
-        data1:
-          "Adequate coverage measures the extent to which key safety indicators are adequately covered within the data.",
-        data2:
-          "The organization has data pertaining to less than a third of the Measurement Framework and Variable Matrix",
-        data3:
-          "The organization has data pertaining to more than half of the Measurement Framework and Variable Matrix identified variables",
-        data4:
-          "The organization has data pertaining to all of the Measurement Framework and Variable Matrix identified variables",
-      },
-    ],
-  };
-}
 
 function Row(props) {
-  const { row } = props;
+  const { row, setcheckLoading } = props;
   const [open, setOpen] = React.useState(false);
-
+  const handleCheckboxChange = async (e, id, type) => {
+    setcheckLoading(true);
+    const checkedData = {
+      [type]: e.target.checked,
+    };
+    try {
+      await instance.put(`/api/data-quality/datalevel-check/${id}`, checkedData);
+    } catch (error) {
+      console.log(error);
+    }
+    setcheckLoading(false);
+  };
   return (
     <React.Fragment>
       <TableRow
@@ -75,10 +63,9 @@ function Row(props) {
           colSpan={12}
           sx={{
             fontWeight: 600,
-            fontSize: "calc(5px + 1vmin)",
           }}
         >
-          {row.name}
+          {row?.headerName}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -92,82 +79,106 @@ function Row(props) {
                   "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
               }}
             >
-              {[1].map((e, i) => (
-                <Table key={i}>
-                  <TableHead>
+              <Table>
+                <TableHead>
+                  <TableRow
+                    sx={{
+                      background: "linear-gradient(to right, pink,lightblue)",
+                    }}
+                  >
+                    <TableCell
+                      align="center"
+                      colSpan={13}
+                      sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
+                    >
+                      {row.headerName}
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.columns?.map((e, i) => (
                     <TableRow
+                      key={i}
                       sx={{
-                        background: "linear-gradient(to right, pink,lightblue)",
+                        cursor: "pointer",
+                        ":hover": {
+                          bgcolor: "#EDEDED",
+                        },
                       }}
                     >
-                      <TableCell
-                        align="center"
-                        colSpan={13}
-                        sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
-                      >
-                        Production
-                      </TableCell>
+                      <TableCell>{e.variableList}</TableCell>
+                      <TableCell>{e.Definition}</TableCell>
+
+                      <TableCell />
+                      {e?.subColounms.map((e, i) => (
+                        <>
+                          <TableCell key={e?.id} sx={{ bgcolor: "#f17272" }}>
+                            <Stack>
+                              <Stack className="checkbox-wrapper-39">
+                                <label>
+                                  <input
+                                    onChange={(event) =>
+                                      handleCheckboxChange(
+                                        event,
+                                        e?.id,
+                                        "doNotHave"
+                                      )
+                                    }
+                                    checked={e?.doNotHave === 1}
+                                    type="checkbox"
+                                  />
+                                  <span className="checkbox"></span>
+                                </label>
+                              </Stack>
+                            </Stack>
+                          </TableCell>
+                          <TableCell sx={{ bgcolor: "#f3f39d" }}>
+                            <Stack>
+                              <Stack className="checkbox-wrapper-39">
+                                <label>
+                                  <input
+                                    onChange={(event) =>
+                                      handleCheckboxChange(
+                                        event,
+                                        e?.id,
+                                        "needsImprovement"
+                                      )
+                                    }
+                                    checked={e?.needsImprovement === 1}
+                                    type="checkbox"
+                                  />
+                                  <span className="checkbox"></span>
+                                </label>
+                              </Stack>
+                            </Stack>
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              bgcolor: "#9bebbb",
+                              borderRight: i !== 2 && "5px solid white",
+                            }}
+                          >
+                            <Stack>
+                              <Stack className="checkbox-wrapper-39">
+                                <label>
+                                  <input
+                                    onChange={(event) =>
+                                      handleCheckboxChange(event, e?.id, "ready")
+                                    }
+                                    checked={e?.ready === 1}
+                                    type="checkbox"
+                                  />
+                                  <span className="checkbox"></span>
+                                </label>
+                              </Stack>
+                            </Stack>{" "}
+                          </TableCell>
+                        </>
+                      ))}
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {[1, 2, 3].map((historyRow) => (
-                      <TableRow
-                        key={historyRow.data1}
-                        sx={{
-                          cursor: "pointer",
-                          ":hover": {
-                            bgcolor: "#EDEDED",
-                          },
-                        }}
-                      >
-                        {/* <TableCell /> */}
-                        <TableCell>Volume Trends</TableCell>
-                        <TableCell>keep track of output</TableCell>
-                        <TableCell>helo</TableCell>
-                        {[1, 2, 3].map((e, i) => (
-                          <>
-                            <TableCell sx={{ bgcolor: "#f17272" }}>
-                              <Stack>
-                                <Stack class="checkbox-wrapper-39">
-                                  <label>
-                                    <input type="checkbox" />
-                                    <span className="checkbox"></span>
-                                  </label>
-                                </Stack>
-                              </Stack>
-                            </TableCell>
-                            <TableCell sx={{ bgcolor: "#f3f39d" }}>
-                              <Stack>
-                                <Stack class="checkbox-wrapper-39">
-                                  <label>
-                                    <input type="checkbox" />
-                                    <span className="checkbox"></span>
-                                  </label>
-                                </Stack>
-                              </Stack>
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                bgcolor: "#9bebbb",
-                                borderRight: i !== 2 && "5px solid white",
-                              }}
-                            >
-                              <Stack>
-                                <Stack class="checkbox-wrapper-39">
-                                  <label>
-                                    <input type="checkbox" />
-                                    <span className="checkbox"></span>
-                                  </label>
-                                </Stack>
-                              </Stack>{" "}
-                            </TableCell>
-                          </>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ))}
+                  ))}
+                </TableBody>
+              </Table>
             </Box>
           </Collapse>
         </TableCell>
@@ -178,44 +189,46 @@ function Row(props) {
 
 Row.propTypes = {
   row: PropTypes.shape({
-    calories: PropTypes.number.isRequired,
-    carbs: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    history: PropTypes.arrayOf(
+    headerName: PropTypes.string.isRequired,
+    columns: PropTypes.arrayOf(
       PropTypes.shape({
-        amount: PropTypes.number.isRequired,
-        customerId: PropTypes.string.isRequired,
-        date: PropTypes.string.isRequired,
+        variableList: PropTypes.string.isRequired,
+        Definition: PropTypes.string.isRequired,
+        subColounms: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            doNotHave: PropTypes.number.isRequired,
+            needsImprovement: PropTypes.number.isRequired,
+            ready: PropTypes.number.isRequired,
+          })
+        ).isRequired,
       })
     ).isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    protein: PropTypes.number.isRequired,
   }).isRequired,
+  setcheckLoading: PropTypes.func.isRequired,
 };
-
-const rows = [
-  createData("Production"),
-  createData("Maintenance"),
-  createData("Procedures"),
-  createData("Human Resources"),
-  createData("Safety Metrics"),
-];
 
 export default function DataQualityTable() {
   const [fetchedData, setFetchedData] = React.useState(null);
+  const [checkLoading, setcheckLoading] = React.useState(false);
+  const [loading,setLoading]=React.useState(true)
   React.useEffect(() => {
     const data = async () => {
+      setLoading(true)
       try {
-        const response = await axios.get("/api/data-quality/overview");
-        response.status===200 && setFetchedData(response.data)
+        const response = await instance.get("/api/data-quality/variable-list");
+        response.status === 200 && setFetchedData(response.data);
       } catch (error) {
         console.log(error);
-      }
+      }finally{setLoading(false)}
     };
     data();
-  }, []);
-  console.log(fetchedData);
+  }, [checkLoading]);
+  if (checkLoading || loading) {
+    return (
+      <Loading/>
+    );
+  }
   return (
     <Stack spacing={2}>
       <CardComponent text={"Data Quality"} />
@@ -238,7 +251,7 @@ export default function DataQualityTable() {
           component={Paper}
           sx={{
             "& .MuiTableCell-root": {
-              width: '144px',
+              width: "144px",
             },
             borderRadius: "20px",
             my: 2,
@@ -256,98 +269,96 @@ export default function DataQualityTable() {
                   <img src="/images/image (2).png" alt="image" width={"50%"} />
                 </TableCell>
 
-                {[1].map((e, i) => (
-                  <>
-                    <TableCell
+                <>
+                  <TableCell
+                    sx={{
+                      borderRight: "5px solid white",
+                      boxShadow:
+                        "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                    }}
+                    colSpan={3}
+                  >
+                    <Typography
+                      variant="body2"
                       sx={{
-                        borderRight: "5px solid white",
-                        boxShadow:
-                          "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                        color: "white",
+                        fontWeight: 600,
+                        bgcolor: "#7c4aa3",
+                        textAlign: "center",
                       }}
-                      colSpan={3}
                     >
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "white",
-                          fontWeight: 600,
-                          bgcolor: "#7c4aa3",
-                          textAlign: "center",
-                        }}
-                      >
-                        Validity
-                      </Typography>
-                      <Typography variant="body2">
-                        Validity assesses the extent to which inferences from
-                        the data accurately represents the “real world”
-                        phenomenon targeted by the measurement.
-                      </Typography>
-                    </TableCell>
-                    <TableCell
+                      Validity
+                    </Typography>
+                    <Typography variant="body2">
+                      Validity assesses the extent to which inferences from the
+                      data accurately represents the “real world” phenomenon
+                      targeted by the measurement.
+                    </Typography>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderRight: "5px solid white",
+                      boxShadow:
+                        "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                    }}
+                    colSpan={3}
+                  >
+                    <Typography
+                      variant="body2"
                       sx={{
-                        borderRight: "5px solid white",
-                        boxShadow:
-                          "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                        color: "white",
+                        fontWeight: 600,
+                        bgcolor: "#20388b",
+                        textAlign: "center",
                       }}
-                      colSpan={3}
                     >
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "white",
-                          fontWeight: 600,
-                          bgcolor: "#20388b",
-                          textAlign: "center",
-                        }}
-                      >
-                        Consistency
-                      </Typography>
+                      Consistency
+                    </Typography>
 
-                      <Typography variant="body2">
-                        Consistency refers to the absence of a difference, when
-                        comparing two or more variables against a definition.
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      colSpan={3}
+                    <Typography variant="body2">
+                      Consistency refers to the absence of a difference, when
+                      comparing two or more variables against a definition.
+                    </Typography>
+                  </TableCell>
+                  <TableCell
+                    colSpan={3}
+                    sx={{
+                      boxShadow:
+                        "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
                       sx={{
-                        boxShadow:
-                          "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                        color: "white",
+                        fontWeight: 600,
+                        bgcolor: "#0a3b06",
+                        textAlign: "center",
                       }}
                     >
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "white",
-                          fontWeight: 600,
-                          bgcolor: "#0a3b06",
-                          textAlign: "center",
-                        }}
-                      >
-                        Variability
-                      </Typography>
-                      <Typography variant="body2">
-                        Variance is defined as the distance of a measure from
-                        the mean of the total sample of measures
-                      </Typography>
-                    </TableCell>
-                  </>
-                ))}
+                      Variability
+                    </Typography>
+                    <Typography variant="body2">
+                      Variance is defined as the distance of a measure from the
+                      mean of the total sample of measures
+                    </Typography>
+                  </TableCell>
+                </>
               </TableRow>
-              <TableRow  sx={{ bgcolor: "#a7e5fbcc" }}>
+              <TableRow sx={{ bgcolor: "#a7e5fbcc" }}>
                 <TableCell />
                 <TableCell
-                  sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
+                  sx={{ fontWeight: 600 }}
                 >
                   Variable List
                 </TableCell>
                 <TableCell
-                  sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
+                  sx={{ fontWeight: 600 }}
                 >
                   Definition
                 </TableCell>
                 <TableCell
-                  sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
+                  sx={{ fontWeight: 600 }}
                 >
                   Org Metrics
                 </TableCell>
@@ -400,8 +411,12 @@ export default function DataQualityTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <Row key={row.name} row={row} />
+              {fetchedData?.data?.map((row) => (
+                <Row
+                  setcheckLoading={setcheckLoading}
+                  key={row.hederName}
+                  row={row}
+                />
               ))}
             </TableBody>
           </Table>

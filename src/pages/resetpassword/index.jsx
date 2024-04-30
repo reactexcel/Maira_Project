@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import ButtonComponent from "../../components/button";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import { instance } from "../../axiosInstance/instance";
 
 const ResetPassword = () => {
   const [loader, setLoader] = React.useState(false);
@@ -27,7 +27,7 @@ const ResetPassword = () => {
       console.log(values);
       setLoader(true);
       try {
-        const response = await axios.post(
+        const response = await instance.post(
           "/api/user/forget-pwd",values);
 
         if (response.status) {

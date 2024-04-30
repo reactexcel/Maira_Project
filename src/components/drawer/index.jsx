@@ -25,6 +25,7 @@ import {
   Person,
   Settings,
 } from "@mui/icons-material";
+import GraphicEqIcon from '@mui/icons-material/GraphicEq';
 import { Popover, Stack } from "@mui/material";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
@@ -259,6 +260,10 @@ export default function MiniDrawer({ pages }) {
                 name: "Data Matrix Summary",
                 path: "data-matrix-summary",
                 icons: <AutoGraph />,
+              },{
+                name:'Data Mat. Sum. (Back)',
+                path:'datamatrixsummarytable-back',
+                icons:<GraphicEqIcon/>
               },
               { name: "Report", path: "report", icons: <FactCheck /> },
             ].map((text, index) => (
@@ -352,7 +357,7 @@ export default function MiniDrawer({ pages }) {
                         justifyContent: "center",
                       }}
                     >
-                      {index % 2 === 0 ? <Settings /> : <Logout />}
+                      {text.icon}
                     </ListItemIcon>
                     <ListItemText
                       primary={text.name}

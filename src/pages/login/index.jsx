@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ButtonComponent from "../../components/button";
 import {toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
+import { instance } from "../../axiosInstance/instance";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Login = () => {
       console.log(values);
       setLoader(true)
       try {
-        const response = await axios.post("/api/user/login",values);
+        const response = await instance.post("/api/user/login",values);
 
         if(response.status){
           toast.success("Login Successfully", {
@@ -56,7 +56,7 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/dashboard",{replace:true});
+      navigate("/dashboard");
     }
   }, []);
   return (
@@ -137,7 +137,7 @@ const Login = () => {
 
               <Typography variant="body2" align="center">
                 {" "}
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link to="/register" style={{ textDecoration: "none" }}>
                   Register Here
                 </Link>

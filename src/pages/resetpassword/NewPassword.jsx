@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ButtonComponent from "../../components/button";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { instance } from "../../axiosInstance/instance";
 
 const CreatePassword = () => {
   const navigate = useNavigate();
@@ -32,22 +33,14 @@ const CreatePassword = () => {
       console.log(values);
       setLoader(true);
       try {
-        const response = await fetch(
+        const response = await instance.post(
           `http://116.202.210.102:8000/user/reset-pwd/${localStorage.getItem(
             "token"
-          )}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-          }
-        );
+          )}`,values);
 
-        const result = await response.json();
-        console.log("Success:", result);
-        if (result.status) {
+        // const result = await response.json();
+        console.log("Success:", response);
+        if (response.status) {
           toast.success("Reset Successfully", {
             position: "top-right",
             autoClose: 5000,
@@ -55,7 +48,7 @@ const CreatePassword = () => {
           formik.resetForm();
           navigate("/");
         } else {
-          toast.error(result.message, {
+          toast.error(response.message, {
             position: "top-right",
             autoClose: 5000,
           });

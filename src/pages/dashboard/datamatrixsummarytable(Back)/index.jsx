@@ -1,12 +1,3 @@
-// import React from "react";
-// import CardComponent from "../../../components/card";
-
-// const DataQualityTable = () => {
-//   return <CardComponent text={"Data Quality"} />;
-// };
-
-// export default DataQualityTable;
-
 import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -52,7 +43,6 @@ function Row(props) {
           colSpan={12}
           sx={{
             fontWeight: 600,
-            // fontSize: "calc(5px + 1vmin)",
           }}
         >
           {row?.headerName}
@@ -86,9 +76,9 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ "& .MuiTableCell-root": { width: "200px" } }}>
-                  {row?.columns?.map((eItem) => (
+                  {row?.columns?.map((eItem, i) => (
                     <TableRow
-                      key={eItem?.variableList}
+                      key={i}
                       sx={{
                         cursor: "pointer",
                         ":hover": {
@@ -96,22 +86,10 @@ function Row(props) {
                         },
                       }}
                     >
-                      {/* <TableCell /> */}
-                      <TableCell >
-                        {eItem?.variableList}
-                      </TableCell>
+                      <TableCell>{eItem?.variableList}</TableCell>
                       {eItem?.subColounms?.map((e, i) => (
-                        <React.Fragment key={i}>
-                          {e.value === 1 ? (
-                            <TableCell sx={{bgcolor:'#f17272', textAlign:'center'}}>Do Not Have</TableCell>
-                          ) : e.value === 2 ? (
-                            <TableCell sx={{bgcolor:'#f3f39d',textAlign:'center'}}>Need Improvement</TableCell>
-                          ) : e.value === 3 ? (
-                            <TableCell sx={{bgcolor:"#9bebbb",textAlign:'center'}}>Ready</TableCell>
-                          ) : (
-                            <TableCell  >{e.value}</TableCell>
-                          )}
-                        </React.Fragment>
+                        // obj.e.type =  obj.e.type + e.value
+                        <TableCell key={i}>{e.value}</TableCell>
                       ))}
                     </TableRow>
                   ))}
@@ -141,29 +119,30 @@ Row.propTypes = {
   }).isRequired,
 };
 
-export default function Datamatrixsummarytable() {
+export default function DatamatrixsummarytableBack() {
   const [fetchData, setFetchData] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await instance.get("/api/data-quality/overview");
-        if (res.status === 200) {
-          setFetchData(res?.data?.data);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
+const [loading, setLoading] = React.useState(true);
+
+React.useEffect(() => {
+  const getData = async () => {
+    try {
+      const res = await instance.get("/api/data-quality/data-analytics");
+      if (res.status === 200) {
+        setFetchData(res?.data?.data);
       }
-    };
-    getData();
-  }, []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  getData();
+}, []);
 if(loading) return <Loading/>
   return (
     <Stack spacing={2}>
-      <CardComponent text={"Data Matrix Summary"} />
+      <CardComponent text={"Data Matrix Summary- Back"} />
       <Box
         sx={{
           p: 2,
@@ -192,55 +171,44 @@ if(loading) return <Loading/>
         >
           <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
             <TableHead>
-              <TableRow
-                sx={{
-                  "& .css-xn32gr-MuiTableCell-root": {
-                    textAlign: "center",
-                    width: "100px",
-                  },
-                }}
-              >
-                {/* <TableCell /> */}
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Variable
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Validity
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Consistency
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Variability
-                </TableCell>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 600 }}>Variable</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Validity</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Consistency</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Variability</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>
                   Adequate Coverage
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Velocity
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Harmonization
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Personnel
-                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Velocity</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Harmonization</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Personnel</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>
                   Centralized Database
                 </TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>
                   Employee Participation
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Management Use
-                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Management Use</TableCell>
               </TableRow>
             </TableHead>
-            {fetchData?.modifiedData?.map((row, i) => (
-              <TableBody key={i}>
-                <Row row={row} />
-              </TableBody>
-            ))}
+            <TableBody>
+                {fetchData?.modifiedData?.map((row, i) => (
+                <Row key={i} row={row} />
+              ))}
+              <TableRow >
+                <TableCell sx={{fontWeight:600,textAlign:'center'}} >Average</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.validity}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.consistency}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.variability}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Adequate Coverage']}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.Velocity}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.Harmonization}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.Personnel}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Centralized Database']}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Employee Participation']}</TableCell>
+                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Management Use']}</TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </Box>

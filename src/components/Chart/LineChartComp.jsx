@@ -1,14 +1,6 @@
+import PropTypes from 'prop-types';
 import { Stack } from "@mui/material";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
 import { Line } from "react-chartjs-2";
 
 ChartJS.register(
@@ -37,7 +29,6 @@ export default function LineChartComp({
         tension: 0.1,
         borderColor: "black",
         backgroundColor: ["yellow", "pink", "red"],
-        width: "100%",
       },
     ],
   };
@@ -52,7 +43,7 @@ export default function LineChartComp({
         ticks: {
           beginAtZero: true,
           stepSize: 1,
-          callback: function ( index) {
+          callback: function (index) {
             return yLabels[index];
           },
         },
@@ -61,8 +52,15 @@ export default function LineChartComp({
   };
 
   return (
-    <Stack sx={{ width: { md: "450px", xs: "100%" } }}>
+    <Stack sx={{ width: { lg: '33%', md: '49%', xs: '100%' } }}>
       <Line data={data} options={options} />
     </Stack>
   );
 }
+
+LineChartComp.propTypes = {
+  datasetsLabel: PropTypes.string.isRequired,
+  yLabels: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dataSet: PropTypes.arrayOf(PropTypes.number).isRequired,
+  labels: PropTypes.arrayOf(PropTypes.string).isRequired,
+};
