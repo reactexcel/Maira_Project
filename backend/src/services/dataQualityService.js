@@ -4,19 +4,72 @@ module.exports.getDataQualityData = async () => {
   try {
     let sqldb = await db.connection;
     const data = await sqldb.query(`
-    SELECT * 
-    FROM maira.dataVariablelist AS dv
-    LEFT JOIN datalevelcheck AS validity_check ON dv.validityId = validity_check.id
-    LEFT JOIN datalevelcheck AS consistency_check ON dv.consistencyId = consistency_check.id
-    LEFT JOIN datalevelcheck AS variability_check ON dv.variabilityId = variability_check.id
+    SELECT dv.*,
+    JSON_OBJECT('doNotHave', validity.doNotHave, 'needsImprovement', validity.needsImprovement, 'ready', validity.ready) AS validity,
+    JSON_OBJECT('doNotHave', consistency.doNotHave, 'needsImprovement', consistency.needsImprovement, 'ready', consistency.ready) AS consistency,
+    JSON_OBJECT('doNotHave', variability.doNotHave, 'needsImprovement', variability.needsImprovement, 'ready', variability.ready) AS variability 
+    FROM  dataVariableList AS dv
+    LEFT JOIN datalevelcheck AS validity ON dv.validityId = validity.id
+    LEFT JOIN datalevelcheck AS consistency ON dv.consistencyId = consistency.id
+    LEFT JOIN datalevelcheck AS variability ON dv.variabilityId = variability.id
          `);
 
-    return data;
+
+         const transformedData = {};
+
+         data[0].forEach(item => {
+           const {
+             id,
+             referenceby,
+             variableshortDescription, 
+             defination, 
+             validityId, 
+             consistencyId, 
+             variabilityId, 
+             validity, 
+             consistency, 
+             variability
+             } = item;
+           if (!transformedData[referenceby]) {
+             transformedData[referenceby] = {
+               headerName: referenceby,
+               columns: []
+             };
+           }
+         
+           transformedData[referenceby].columns.push({
+             variableList: variableshortDescription,
+             Definition: defination,
+              subColounms:[{
+               id:validityId,
+               type:"validity",
+               doNotHave: validity.doNotHave,
+               needsImprovement: validity.needsImprovement,
+               ready: validity.ready
+             },
+             {
+               id:consistencyId,
+               type:"consistency",
+               doNotHave: consistency.doNotHave,
+               needsImprovement: consistency.needsImprovement,
+               ready: consistency.ready
+             },
+             {
+               id:variabilityId,
+               type:"variability",
+               doNotHave: variability.doNotHave,
+               needsImprovement: variability.needsImprovement,
+               ready: variability.ready
+             }]
+           });
+         });
+         
+         const transformedArray = Object.values(transformedData);
+         return transformedArray;
   } catch (err) {
     throw new Error(err)
   }
 };
-
 
 module.exports.dataLevelcheckUpdate = async (levelCheckId , body) => {
   try {

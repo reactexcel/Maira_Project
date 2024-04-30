@@ -1,68 +1,69 @@
-const db = require('../model/connection')
+
+const db = require('../model/connection');
+const { dataAnalytics } = require('./dataAnalyticsService');
 
 module.exports.reportService = async () => {
   try {
-    let conn = await db.connection;
-
-    let datavariablelistData = await conn.query(`select * from datavariablelist`)
-    datavariablelistData = datavariablelistData[0]
-
-    //     let getDataLevelCheck = `SELECT 
-    //     SUM(doNotHave) AS Total_DoNotHave_Count,
-    //     SUM(needsImprovement) AS Total_NeedsImprovement_Count,
-    //     SUM(ready) AS Total_Ready_Count FROM datalevelcheck;
-    // `
-
-    let dataLevelCheck = await conn.query(`SELECT
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.validityId FROM dataVariableList AS dv) AND doNotHave = true) AS validity_doNotHaveCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.validityId FROM dataVariableList AS dv) AND needsImprovement = true) AS validity_needsImprovementCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.validityId FROM dataVariableList AS dv) AND ready = true) AS validity_readyCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.consistencyId FROM dataVariableList AS dv) AND doNotHave = true) AS consistency_doNotHaveCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.consistencyId FROM dataVariableList AS dv) AND needsImprovement = true) AS consistency_needsImprovementCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.consistencyId FROM dataVariableList AS dv) AND ready = true) AS consistency_readyCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.variabilityId FROM dataVariableList AS dv) AND doNotHave = true) AS variability_doNotHaveCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.variabilityId FROM dataVariableList AS dv) AND needsImprovement = true) AS variability_needsImprovementCount,
- (SELECT COUNT(*) FROM datalevelcheck WHERE id IN (SELECT dv.variabilityId FROM dataVariableList AS dv) AND ready = true) AS variability_readyCount;
-`)
-    let ratingLevelCheck = await conn.query(`SELECT rc.doNotHave , rc.needsImprovement , rc.ready ,rs.scaleName FROM maira.ratinglevelcheck  rc left join  ratingScale rs on  rc.ratingscaleId = rs.id;`)
-    ratingLevelCheck = ratingLevelCheck[0]
+    const { maxAppearance } = await dataAnalytics();
+    // let countAppearance = {};
+    // data.forEach(row => {
+    //   row.columns.forEach(colounm => {
+    //     colounm.subColounms.forEach(obj => {
+    //       if (!countAppearance[obj.type]) {
+    //         countAppearance[obj.type] = {};
+    //       }
+    //       let value = obj.value === 'FALSE' ? 0 : obj.value;
+    //       if (!countAppearance[obj.type][value]) {
+    //         countAppearance[obj.type][value] = 0;
+    //       }
+    //       countAppearance[obj.type][value]++;
+    //     })
+    //   })
+    // })
 
 
-let data =   ratingLevelCheck.map((e) => {
-      let obj = {}
-      if (e.doNotHave === 1) {
+    // let maxAppearance = {};
 
-        obj.scaleName = e.scaleName
-        obj.average = 1
-        return obj
+    // for (let type in countAppearance) {
+    //   let maxCount = 0;
+    //   let maxValue = null;
+    //   for (let value in countAppearance[type]) {
+    //     if (countAppearance[type][value] > maxCount) {
+    //       maxCount = countAppearance[type][value];
+    //       maxValue = parseInt(value);
+    //     }
+    //   }
+    //   maxAppearance[type] = maxValue;
+    // }
 
-      } else if (e.needsImprovement === 1) {
-        obj.scaleName = e.scaleName
-        obj.average = 2
-        return obj
+    const report = {
+      "Validity/Accuracy": { Weight: 0.15, Descriptive: 1, Diagnostic: 1, Predictive: 2, Prescriptive: 2, "Your Score": maxAppearance["validity"]},
+      "Consistency": { Weight: 0.15, Descriptive: 1, Diagnostic: 1, Predictive: 2, Prescriptive: 2, "Your Score": maxAppearance["consistency"]},
+      "Variance": { Weight: 0.15, Descriptive: 1, Diagnostic: 1, Predictive: 2, Prescriptive: 2, "Your Score": maxAppearance["variability"]},
+      "Adequate Coverage": { Weight: 0.10, Descriptive: 1, Diagnostic: 1, Predictive: 1, Prescriptive: 2, "Your Score": maxAppearance["Adequate Coverage"] },
+      "Velocity": { Weight: 0.10, Descriptive: null, Diagnostic: 1, Predictive: 1, Prescriptive: 2, "Your Score": maxAppearance["Harmonization"] },
+      "Harmonization": { Weight: 0.10, Descriptive: null, Diagnostic: 1, Predictive: 2, Prescriptive: 2, "Your Score": maxAppearance["validity"] },
+      "Personnel": { Weight: 0.10, Descriptive: null, Diagnostic: 1, Predictive: 2, Prescriptive: 2, "Your Score": maxAppearance["Personnel"] },
+      "Centralized Database": { Weight: 0.05, Descriptive: null, Diagnostic: null, Predictive: 1, Prescriptive: 2, "Your Score": maxAppearance["Centralized Database"] },
+      "Employee Participation": { Weight: 0.05, Descriptive: null, Diagnostic: null, Predictive: null, Prescriptive: null, "Your Score": maxAppearance["Employee Participation"] },
+      "Management Use": { Weight: 0.05, Descriptive: null, Diagnostic: null, Predictive: null, Prescriptive: null, "Your Score": maxAppearance["Management Use"] },
+    }
 
-      } else if (e.ready === 1) {
-        console.log(e.ready);
-        obj.scaleName = e.scaleName
-        obj.average = 3
-        return obj
+    let overall = { Descriptive: 0, Diagnostic: 0, Predictive: 0, Prescriptive: 0 }
 
+    for (let entry in report) {
+      if (report.hasOwnProperty(entry)) {
+        if(report[entry]["Your Score"] > 0){
+        overall.Descriptive = overall.Descriptive + report[entry].Descriptive !== null ? ((report[entry].Weight * report[entry].Descriptive) / report[entry]["Your Score"]).toFixed(2) : 0
+        overall.Diagnostic = overall.Diagnostic + report[entry].Diagnostic !== null ? ((report[entry].Weight * report[entry].Diagnostic) / report[entry]["Your Score"]).toFixed(2) : 0
+        overall.Predictive = overall.Predictive + report[entry].Predictive !== null ? ((report[entry].Weight * report[entry].Predictive) / report[entry]["Your Score"]).toFixed(2) : 0
+        overall.Prescriptive = overall.Prescriptive + report[entry].Prescriptive !== null ? ((report[entry].Weight * report[entry].Prescriptive) / report[entry]["Your Score"]).toFixed(2) : 0
+        }
       }
-      else {
-        obj.average = 0
-        return obj
-      }
 
-    })
+    }
 
-
-
-
-
-
-
-
-
+    return {...report, overall};
 
   } catch (err) {
     throw new Error(err)

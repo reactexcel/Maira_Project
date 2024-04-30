@@ -3,9 +3,10 @@ const {reportService} = require('../services/reportSer')
 module.exports.reportController = async (req , res )=>{
   try{
 
-     await reportService()
+     const report = await reportService()
     res.status(200).json({
-      status : true 
+      status : true,
+      report :report
     })
   }
   catch(err){

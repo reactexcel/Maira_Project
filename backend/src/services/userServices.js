@@ -55,7 +55,7 @@ module.exports.userLoginSer = async (body) => {
     if (!userData) {
       throw new Error("User is not  Registered with this emailAddress ")
     }
-    const passwordMatch = await bcrypt.compare(password, userData.Password)
+    const passwordMatch = await bcrypt.compare(password, userData.password)
 
     if (!passwordMatch) {
       throw new Error('Password Incorrect ')
