@@ -26,8 +26,9 @@ import {
   Settings,
 } from "@mui/icons-material";
 import GraphicEqIcon from '@mui/icons-material/GraphicEq';
-import { Popover, Stack } from "@mui/material";
+import { CircularProgress, Popover, Stack } from "@mui/material";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -101,7 +102,7 @@ export default function MiniDrawer({ pages }) {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [active, setActive] = React.useState(null);
-
+  const checkLoading=useSelector((state)=>state.CvSlice.checkLoading)
   const location = useLocation();
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -174,7 +175,8 @@ export default function MiniDrawer({ pages }) {
               Dashboard
             </Typography>
           </Box>
-          <Box>
+          <Box sx={{display:'flex',alignItems:'center'}}>
+          {checkLoading && <CircularProgress sx={{color:'inherit'}}/>}
             <Person
               sx={{
                 mt: "5px",
@@ -182,6 +184,7 @@ export default function MiniDrawer({ pages }) {
               }}
               onClick={handleClick}
             />
+
             <Popover
               id={id}
               open={openProfile}
@@ -192,6 +195,7 @@ export default function MiniDrawer({ pages }) {
                 horizontal: "left",
               }}
             >
+           
               <Box
                 sx={{
                   p: 2,

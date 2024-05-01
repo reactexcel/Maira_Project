@@ -17,6 +17,8 @@ import CardComponent from "../../../components/card";
 import { Stack } from "@mui/material";
 import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
+import { useDispatch, useSelector } from "react-redux";
+import { setData, setloading } from "../../../redux/slices/CvSlice";
 
 function Row(props) {
   const { row } = props;
@@ -120,21 +122,21 @@ Row.propTypes = {
 };
 
 export default function DatamatrixsummarytableBack() {
-  const [fetchData, setFetchData] = React.useState(null);
-
-const [loading, setLoading] = React.useState(true);
-
+  const dispatch =useDispatch()
+  const fetchData=useSelector((state)=>state?.CvSlice?.getData)
+const loading=useSelector((state)=>state?.CvSlice?.isLoading)
 React.useEffect(() => {
   const getData = async () => {
+    dispatch(setloading(true))
     try {
       const res = await instance.get("/api/data-quality/data-analytics");
       if (res.status === 200) {
-        setFetchData(res?.data?.data);
+        dispatch(setData(res?.data?.data))
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      dispatch(setloading(false))
     }
   };
   getData();

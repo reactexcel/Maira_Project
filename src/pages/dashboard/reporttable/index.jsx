@@ -11,6 +11,8 @@ import CardComponent from '../../../components/card';
 import { ReportTableHeadStaticData } from '../../../utiles/staticdata';
 import Loading from '../../../components/Referesh/Loading';
 import { instance } from '../../../axiosInstance/instance';
+import { useDispatch, useSelector } from 'react-redux';
+import { setData } from '../../../redux/slices/CvSlice';
 const colorCode = (value) => {
   if (value === 1) {
     return "#f3f39d";
@@ -20,16 +22,17 @@ const colorCode = (value) => {
 };
 
 export default function ReportTable() {
-  const [fetchedData, setFetchedData] = useState(null);
+  // const [fetchedData, setFetchedData] = useState(null);
+  const dispatch=useDispatch()
   const [reportLoading, setReportLoading] = useState(true);
-
+  const fetchedData=useSelector((state)=>state?.CvSlice?.getData)
   useEffect(() => {
     const getData = async () => {
       try {
         setReportLoading(true); 
         const res = await instance.get('/api/data/report-data');
         if (res.status === 200) {
-          setFetchedData(res?.data?.report);
+          dispatch(setData(res?.data?.report));
         }
       } catch (error) {
         console.log(error);

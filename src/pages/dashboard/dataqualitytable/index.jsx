@@ -1,11 +1,3 @@
-// import React from "react";
-// import CardComponent from "../../../components/card";
-
-// const DataQualityTable = () => {
-//   return <CardComponent text={"Data Quality"} />;
-// };
-
-// export default DataQualityTable;
 
 import * as React from "react";
 import PropTypes from "prop-types";
@@ -23,24 +15,35 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
-import {  Stack } from "@mui/material";
-import Loading from "../../../components/Referesh/Loading";
+import { Stack } from "@mui/material";
 import { instance } from "../../../axiosInstance/instance";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCheckloading,
+  setData,
+  setloading,
+} from "../../../redux/slices/CvSlice";
+import Loading from "../../../components/Referesh/Loading";
 
 function Row(props) {
-  const { row, setcheckLoading } = props;
+  const { row, data } = props;
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
   const handleCheckboxChange = async (e, id, type) => {
-    setcheckLoading(true);
+    dispatch(setCheckloading(true));
     const checkedData = {
       [type]: e.target.checked,
     };
     try {
-      await instance.put(`/api/data-quality/datalevel-check/${id}`, checkedData);
+      await instance.put(
+        `/api/data-quality/datalevel-check/${id}`,
+        checkedData
+      );
     } catch (error) {
       console.log(error);
     }
-    setcheckLoading(false);
+    data();
+    dispatch(setCheckloading(false));
   };
   return (
     <React.Fragment>
@@ -51,6 +54,7 @@ function Row(props) {
           ":hover": {
             bgcolor: "#EDEDED",
             cursor: "pointer",
+            // border:'2px solid'
           },
         }}
       >
@@ -60,7 +64,7 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell
-          colSpan={12}
+          colSpan={11}
           sx={{
             fontWeight: 600,
           }}
@@ -88,7 +92,7 @@ function Row(props) {
                   >
                     <TableCell
                       align="center"
-                      colSpan={13}
+                      colSpan={11}
                       sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
                     >
                       {row.headerName}
@@ -109,7 +113,7 @@ function Row(props) {
                       <TableCell>{e.variableList}</TableCell>
                       <TableCell>{e.Definition}</TableCell>
 
-                      <TableCell />
+                      {/* <TableCell /> */}
                       {e?.subColounms.map((e, i) => (
                         <>
                           <TableCell key={e?.id} sx={{ bgcolor: "#f17272" }}>
@@ -163,7 +167,11 @@ function Row(props) {
                                 <label>
                                   <input
                                     onChange={(event) =>
-                                      handleCheckboxChange(event, e?.id, "ready")
+                                      handleCheckboxChange(
+                                        event,
+                                        e?.id,
+                                        "ready"
+                                      )
                                     }
                                     checked={e?.ready === 1}
                                     type="checkbox"
@@ -205,30 +213,36 @@ Row.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  setcheckLoading: PropTypes.func.isRequired,
+  data: PropTypes.func.isRequired, // Add this line for data prop validation
 };
 
 export default function DataQualityTable() {
-  const [fetchedData, setFetchedData] = React.useState(null);
-  const [checkLoading, setcheckLoading] = React.useState(false);
-  const [loading,setLoading]=React.useState(true)
+  const fetchedData = useSelector((state) => state?.CvSlice?.getData);
+  const loading = useSelector((state) => state?.CvSlice?.isLoading);
+  const dispatch = useDispatch();
+  const data = async () => {
+    try {
+      const response = await instance.get("/api/data-quality/variable-list");
+      response.status === 200 && dispatch(setData(response.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   React.useEffect(() => {
-    const data = async () => {
-      setLoading(true)
+    const fetchData = async () => {
+      dispatch(setloading(true));
       try {
-        const response = await instance.get("/api/data-quality/variable-list");
-        response.status === 200 && setFetchedData(response.data);
+        await data();
       } catch (error) {
         console.log(error);
-      }finally{setLoading(false)}
+      } finally {
+        dispatch(setloading(false));
+      }
     };
-    data();
-  }, [checkLoading]);
-  if (checkLoading || loading) {
-    return (
-      <Loading/>
-    );
-  }
+    fetchData();
+  }, []);
+  if (loading) return <Loading />;
+  
   return (
     <Stack spacing={2}>
       <CardComponent text={"Data Quality"} />
@@ -264,119 +278,126 @@ export default function DataQualityTable() {
           <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
             <TableHead>
               <TableRow>
-                <TableCell />
-                <TableCell colSpan={3}>
-                  <img src="/images/image (2).png" alt="image" width={"50%"} />
+                {/* <TableCell></TableCell> */}
+                <TableCell align="center" colSpan={2}>
+                  {/* <img src="/images/image (2).png" alt="image" width={"50%"} /> */}
                 </TableCell>
 
-                <>
-                  <TableCell
+                <TableCell
+                  sx={{
+                    borderRight: "5px solid white",
+                    boxShadow:
+                      "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                  }}
+                  colSpan={3}
+                >
+                  {/* <Stack sx={{textAlign:'center'}} > */}
+                  <Typography
+                    variant="body2"
                     sx={{
-                      borderRight: "5px solid white",
-                      boxShadow:
-                        "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                      color: "white",
+                      fontWeight: 600,
+                      bgcolor: "#7c4aa3",
+                      textAlign: "center",
+                      // mb:'10px'
                     }}
-                    colSpan={3}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "white",
-                        fontWeight: 600,
-                        bgcolor: "#7c4aa3",
-                        textAlign: "center",
-                      }}
-                    >
-                      Validity
-                    </Typography>
-                    <Typography variant="body2">
-                      Validity assesses the extent to which inferences from the
-                      data accurately represents the “real world” phenomenon
-                      targeted by the measurement.
-                    </Typography>
-                  </TableCell>
-                  <TableCell
+                    Validity
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ textAlign: "center", height: "74px" }}
+                  >
+                    Validity assesses the extent to which inferences from the
+                    data accurately represents the “real world” phenomenon
+                    targeted by the measurement.
+                  </Typography>
+                  {/* </Stack> */}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    borderRight: "5px solid white",
+                    boxShadow:
+                      "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                  }}
+                  colSpan={3}
+                >
+                  {/* <Stack sx={{height:'100%',textAlign:'center'}} spacing={2}> */}
+                  <Typography
+                    variant="body2"
                     sx={{
-                      borderRight: "5px solid white",
-                      boxShadow:
-                        "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                      // width:'100%',
+                      color: "white",
+                      fontWeight: 600,
+                      bgcolor: "#20388b",
+                      textAlign: "center",
                     }}
-                    colSpan={3}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "white",
-                        fontWeight: 600,
-                        bgcolor: "#20388b",
-                        textAlign: "center",
-                      }}
-                    >
-                      Consistency
-                    </Typography>
+                    Consistency
+                  </Typography>
 
-                    <Typography variant="body2">
-                      Consistency refers to the absence of a difference, when
-                      comparing two or more variables against a definition.
-                    </Typography>
-                  </TableCell>
-                  <TableCell
-                    colSpan={3}
+                  <Typography
+                    variant="body2"
+                    sx={{ textAlign: "center", height: "74px" }}
+                  >
+                    Consistency refers to the absence of a difference, when
+                    comparing two or more variables against a definition.
+                  </Typography>
+                  {/* </Stack> */}
+                </TableCell>
+                <TableCell
+                  colSpan={3}
+                  sx={{
+                    boxShadow:
+                      "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                  }}
+                >
+                  {/* <Stack sx={{height:'100%',textAlign:'center'}} spacing={2} > */}
+                  <Typography
+                    variant="body2"
                     sx={{
-                      boxShadow:
-                        "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
+                      color: "white",
+                      fontWeight: 600,
+                      bgcolor: "#0a3b06",
+                      textAlign: "center",
                     }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: "white",
-                        fontWeight: 600,
-                        bgcolor: "#0a3b06",
-                        textAlign: "center",
-                      }}
-                    >
-                      Variability
-                    </Typography>
-                    <Typography variant="body2">
-                      Variance is defined as the distance of a measure from the
-                      mean of the total sample of measures
-                    </Typography>
-                  </TableCell>
-                </>
+                    Variability
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ textAlign: "center", height: "74px" }}
+                  >
+                    Variance is defined as the distance of a measure from the
+                    mean of the total sample of measures
+                  </Typography>
+                  {/* </Stack> */}
+                </TableCell>
               </TableRow>
               <TableRow sx={{ bgcolor: "#a7e5fbcc" }}>
-                <TableCell />
-                <TableCell
-                  sx={{ fontWeight: 600 }}
-                >
-                  Variable List
-                </TableCell>
-                <TableCell
-                  sx={{ fontWeight: 600 }}
-                >
-                  Definition
-                </TableCell>
-                <TableCell
+                {/* <TableCell /> */}
+                <TableCell sx={{ fontWeight: 600, p:'37px'}}>Variable List</TableCell>
+                <TableCell sx={{ fontWeight: 600,p:'37px' }}>Definition</TableCell>
+                {/* <TableCell
                   sx={{ fontWeight: 600 }}
                 >
                   Org Metrics
-                </TableCell>
+                </TableCell> */}
                 {[1, 2, 3].map((e, i) => (
                   <>
-                    <TableCell sx={{ bgcolor: "#f17272" }}>
+                    <TableCell sx={{ bgcolor: "#f17272", textAlign: "center" }}>
                       <Typography
                         variant="body2"
                         sx={{ color: "#971a1a", fontWeight: 600 }}
                       >
                         Do Not Have
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2" sx={{ height: "220px" }}>
                         errors are found (e.g. missing values or impossible
                         values, like negative hours worked)
                       </Typography>
                     </TableCell>
-                    <TableCell sx={{ bgcolor: "#f3f39d" }}>
+                    <TableCell sx={{ bgcolor: "#f3f39d", textAlign: "center" }}>
                       <Typography
                         variant="body2"
                         sx={{ color: "rgb(89 95 6 / 87%)", fontWeight: 600 }}
@@ -384,7 +405,7 @@ export default function DataQualityTable() {
                         Needs Improvement
                       </Typography>
 
-                      <Typography variant="body2">
+                      <Typography variant="body2" sx={{ height: "220px" }}>
                         errors are found (e.g. missing values or impossible
                         values, like negative hours worked)
                       </Typography>
@@ -393,6 +414,7 @@ export default function DataQualityTable() {
                       sx={{
                         bgcolor: "#9bebbb",
                         borderRight: i !== 2 && "5px solid white",
+                        textAlign: "center",
                       }}
                     >
                       <Typography
@@ -401,7 +423,7 @@ export default function DataQualityTable() {
                       >
                         Ready
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2" sx={{ height: "220px" }}>
                         errors are found (e.g. missing values or impossible
                         values, like negative hours worked)
                       </Typography>
@@ -412,11 +434,7 @@ export default function DataQualityTable() {
             </TableHead>
             <TableBody>
               {fetchedData?.data?.map((row) => (
-                <Row
-                  setcheckLoading={setcheckLoading}
-                  key={row.hederName}
-                  row={row}
-                />
+                <Row key={row.hederName} row={row} data={data} />
               ))}
             </TableBody>
           </Table>

@@ -16,15 +16,25 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
 import {  Stack } from "@mui/material";
 import LineChartComp from "../../../components/Chart/LineChartComp";
-import Loading from "../../../components/Referesh/Loading";
+// import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCheckloading,
+  setData,
+  setGraphState1,
+  setGraphState2,
+  setGraphState3,
+  setloading,
+} from "../../../redux/slices/CvSlice";
+import Loading from "../../../components/Referesh/Loading";
 
 function Row(props) {
-  const { row, setcheckLoading } = props;
+  const { row, data } = props;
   const [open, setOpen] = React.useState(false);
-
+  const dispatch = useDispatch();
   const handleCheckBox = async (e, id, type) => {
-    setcheckLoading(true);
+    dispatch(setCheckloading(true));
     const checkedData = {
       ratingLevelId: id,
       [type]: e.target.checked,
@@ -34,7 +44,8 @@ function Row(props) {
     } catch (error) {
       console.log(error);
     }
-    setcheckLoading(false);
+    data();
+    dispatch(setCheckloading(false));
   };
   return (
     <React.Fragment>
@@ -193,29 +204,39 @@ Row.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  setcheckLoading: PropTypes.func.isRequired,
+  data: PropTypes.func.isRequired, 
 };
 
 export default function OrgLevelRatingTable() {
-  const [fetchedData, setFetchedData] = React.useState(null);
-  const [checkLoading, setcheckLoading] = React.useState(false);
-  const [graphState1, setGraphState1] = React.useState(null);
-  const [graphState2, setGraphState2] = React.useState(null);
-  const [graphState3, setGraphState3] = React.useState(null);
-  const [loading ,setLoading]=React.useState(true)
+  const fetchedData = useSelector((state) => state?.CvSlice?.getData);
+  const graphState1 = useSelector((state) => state?.CvSlice?.grapState1);
+  const graphState2 = useSelector((state) => state?.CvSlice?.grapState2);
+  const graphState3 = useSelector((state) => state?.CvSlice?.grapState3);
+  const dispatch = useDispatch();
+  const checkLoading = useSelector((state) => state.CvSlice.checkLoading);
+  const loading = useSelector((state) => state?.CvSlice?.isLoading);
+  const data = async () => {
+    try {
+      const res = await instance.get("/api/organization/rating");
+      res.status === 200 && dispatch(setData(res.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   React.useEffect(() => {
-    const data = async () => {
-      setLoading(true)
+    const fetchedData = async () => {
+      dispatch(setloading(true));
       try {
-        const res = await instance.get("/api/organization/rating");
-        res.status === 200 && setFetchedData(res.data);
+        await data();
       } catch (error) {
         console.log(error);
-      }finally{setLoading(false)}
+      } finally {
+        dispatch(setloading(false));
+      }
     };
-    data();
-  }, [checkLoading]);
-  
+    fetchedData();
+  }, []);
+
   function checkScaleStatus(scaleName, doNotHave, needImprovements, ready) {
     if (doNotHave === 1) {
       return { scaleName: scaleName, value: "Do not have" };
@@ -244,11 +265,10 @@ export default function OrgLevelRatingTable() {
         return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
       case "Centralized Database":
         return checkScaleStatus(scaleName, doNotHave, needImprovements, ready);
-    default:
+      default:
         return "Invalid scale name";
     }
   }
-  
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -261,12 +281,12 @@ export default function OrgLevelRatingTable() {
         console.log(error);
       }
     };
-  
+
     const processGraphData = (data) => {
       let sum1 = [0, 0, 0];
       let sum2 = [0, 0];
       let sum3 = [0, 0];
-      
+
       data.forEach((item) => {
         const result = scaleStatusDecision(
           item.scalename,
@@ -284,27 +304,27 @@ export default function OrgLevelRatingTable() {
           case "Harmonization":
             sum1[2] = getResultValue(result.value);
             break;
-            case "Management Use":
-              sum2[0] = getResultValue(result.value);
-              break;
-            case "Employee Participation":
-              sum2[1] = getResultValue(result.value);
-              break;
-              case "Personnel":
-                sum3[0] = getResultValue(result.value);
-                break;
-              case "Centralized Database":
-                sum3[1] = getResultValue(result.value);
-                break;
+          case "Management Use":
+            sum2[0] = getResultValue(result.value);
+            break;
+          case "Employee Participation":
+            sum2[1] = getResultValue(result.value);
+            break;
+          case "Personnel":
+            sum3[0] = getResultValue(result.value);
+            break;
+          case "Centralized Database":
+            sum3[1] = getResultValue(result.value);
+            break;
           default:
             break;
         }
       });
-      setGraphState1(sum1);
-      setGraphState2(sum2);
-      setGraphState3(sum3);
+      dispatch(setGraphState1(sum1));
+      dispatch(setGraphState2(sum2));
+      dispatch(setGraphState3(sum3));
     };
-  
+
     const getResultValue = (value) => {
       switch (value) {
         case "Do not have":
@@ -317,11 +337,10 @@ export default function OrgLevelRatingTable() {
           return 0;
       }
     };
-  
+
     fetchData();
   }, [checkLoading]);
-  if ( loading || checkLoading) return <Loading/>
-
+  if (loading) return <Loading />;
   return (
     <Stack spacing={2}>
       <CardComponent text={"Org Level Rating"} />
@@ -373,12 +392,7 @@ export default function OrgLevelRatingTable() {
             </TableHead>
             <TableBody>
               {fetchedData?.data?.map((row) => (
-                <Row
-                  setcheckLoading={setcheckLoading}
-                  
-                  key={row?.title}
-                  row={row}
-                />
+                <Row key={row?.title} row={row} data={data} />
               ))}
             </TableBody>
           </Table>
