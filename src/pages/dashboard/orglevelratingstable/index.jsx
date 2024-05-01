@@ -14,7 +14,7 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
-import {  CircularProgress, Stack } from "@mui/material";
+import { CircularProgress, Stack } from "@mui/material";
 import LineChartComp from "../../../components/Chart/LineChartComp";
 // import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
@@ -33,11 +33,11 @@ import Loading from "../../../components/Referesh/Loading";
 function Row(props) {
   const { row, data } = props;
   const [open, setOpen] = React.useState(false);
-  const checkloading =useSelector((state)=>state.CvSlice.checkLoading)
-  const checkBoxId =useSelector((state)=>state.CvSlice.checkBoxId)
+  const checkloading = useSelector((state) => state.CvSlice.checkLoading);
+  const checkBoxId = useSelector((state) => state.CvSlice.checkBoxId);
   const dispatch = useDispatch();
   const handleCheckBox = async (e, id, type) => {
-    dispatch(setCheckBoxId({id,type}))
+    dispatch(setCheckBoxId({ id, type }));
     dispatch(setCheckloading(true));
     const checkedData = {
       ratingLevelId: id,
@@ -123,17 +123,30 @@ function Row(props) {
                           {features?.doNotHave}
                           <Stack class="checkbox-wrapper-39">
                             <label>
-                              {checkloading && features?.id===checkBoxId?.id && checkBoxId?.type==='doNotHave'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
-                              <input
-                                checked={features?.check[0].doNotHave === 1}
-                                onClick={(e) =>
-                                  handleCheckBox(e, features?.id, "doNotHave")
-                                }
-                                type="checkbox"
-                              />
-                              <span className="checkbox"></span>
-                           </>}
-                               </label>
+                              {checkloading &&
+                              features?.id === checkBoxId?.id &&
+                              checkBoxId?.type === "doNotHave" ? (
+                                <CircularProgress
+                                  size={20}
+                                  sx={{ color: "inherit" }}
+                                />
+                              ) : (
+                                <>
+                                  <input
+                                    checked={features?.check[0].doNotHave === 1}
+                                    onClick={(e) =>
+                                      handleCheckBox(
+                                        e,
+                                        features?.id,
+                                        "doNotHave"
+                                      )
+                                    }
+                                    type="checkbox"
+                                  />
+                                  <span className="checkbox"></span>
+                                </>
+                              )}
+                            </label>
                           </Stack>
                         </Stack>
                       </TableCell>
@@ -142,23 +155,32 @@ function Row(props) {
                           {features?.needsImprovement}
                           <Stack class="checkbox-wrapper-39">
                             <label>
-                              {checkloading && features?.id===checkBoxId.id && checkBoxId.type==='needsImprovement'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
-                              <input
-                                checked={
-                                  features?.check[0].needsImprovement === 1
-                                }
-                                onClick={(e) =>
-                                  handleCheckBox(
-                                    e,
-                                    features?.id,
-                                    "needsImprovement"
-                                  )
-                                }
-                                type="checkbox"
-                              />
-                              <span className="checkbox"></span>
-                            </>}
-                              </label>
+                              {checkloading &&
+                              features?.id === checkBoxId.id &&
+                              checkBoxId.type === "needsImprovement" ? (
+                                <CircularProgress
+                                  size={20}
+                                  sx={{ color: "inherit" }}
+                                />
+                              ) : (
+                                <>
+                                  <input
+                                    checked={
+                                      features?.check[0].needsImprovement === 1
+                                    }
+                                    onClick={(e) =>
+                                      handleCheckBox(
+                                        e,
+                                        features?.id,
+                                        "needsImprovement"
+                                      )
+                                    }
+                                    type="checkbox"
+                                  />
+                                  <span className="checkbox"></span>
+                                </>
+                              )}
+                            </label>
                           </Stack>
                         </Stack>
                       </TableCell>
@@ -167,17 +189,26 @@ function Row(props) {
                           {features?.ready}
                           <Stack class="checkbox-wrapper-39">
                             <label>
-                              {checkloading && features?.id===checkBoxId?.id && checkBoxId?.type==='ready'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
-                              <input
-                                checked={features?.check[0].ready === 1}
-                                onClick={(e) =>
-                                  handleCheckBox(e, features?.id, "ready")
-                                }
-                                type="checkbox"
-                              />
-                              <span className="checkbox"></span>
-                            </>}
-                              </label>
+                              {checkloading &&
+                              features?.id === checkBoxId?.id &&
+                              checkBoxId?.type === "ready" ? (
+                                <CircularProgress
+                                  size={20}
+                                  sx={{ color: "inherit" }}
+                                />
+                              ) : (
+                                <>
+                                  <input
+                                    checked={features?.check[0].ready === 1}
+                                    onClick={(e) =>
+                                      handleCheckBox(e, features?.id, "ready")
+                                    }
+                                    type="checkbox"
+                                  />
+                                  <span className="checkbox"></span>
+                                </>
+                              )}
+                            </label>
                           </Stack>
                         </Stack>{" "}
                       </TableCell>
@@ -214,7 +245,7 @@ Row.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  data: PropTypes.func.isRequired, 
+  data: PropTypes.func.isRequired,
 };
 
 export default function OrgLevelRatingTable() {

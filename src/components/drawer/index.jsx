@@ -18,6 +18,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Person2Icon from '@mui/icons-material/Person2';
 import LogoutIcon from '@mui/icons-material/Logout';
+import PropTypes from 'prop-types'
 import {
   Analytics,
   AutoGraph,
@@ -25,12 +26,10 @@ import {
   ListAlt,
   Logout,
   Person,
-  Settings,
 } from "@mui/icons-material";
 import GraphicEqIcon from '@mui/icons-material/GraphicEq';
-import { CircularProgress, Popover, Stack } from "@mui/material";
+import { Popover, Stack } from "@mui/material";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -103,7 +102,6 @@ export default function MiniDrawer({ pages }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [active, setActive] = React.useState(null);
   const location = useLocation();
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -134,9 +132,6 @@ export default function MiniDrawer({ pages }) {
     handleClose();
   };
 
-  const handleActive = (id) => {
-    setActive(id);
-  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -277,7 +272,6 @@ export default function MiniDrawer({ pages }) {
                 key={index}
               >
                 <ListItem
-                  onClick={() => handleActive(text.path)}
                   disablePadding
                   sx={{
                     display: "block",
@@ -328,13 +322,13 @@ export default function MiniDrawer({ pages }) {
             ].map((text, index) => (
               <NavLink
               onClick={text.onclick}
-                key={text}
+                key={index}
                 to={text.path}
                 style={{ color: "black", textDecoration: "none" }}
               >
                 <ListItem
                   disablePadding
-                  onClick={() => handleActive(text.path)}
+
                   sx={{
                     display: "block",
                     borderBottom:
@@ -391,3 +385,6 @@ export default function MiniDrawer({ pages }) {
     </Box>
   );
 }
+MiniDrawer.propTypes = {
+  pages: PropTypes.node.isRequired, // Assuming pages is a node
+};

@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -30,10 +29,10 @@ function Row(props) {
   const { row, data } = props;
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
-  const checkloading =useSelector((state)=>state.CvSlice.checkLoading)
-  const checkBoxId =useSelector((state)=>state.CvSlice.checkBoxId)
+  const checkloading = useSelector((state) => state.CvSlice.checkLoading);
+  const checkBoxId = useSelector((state) => state.CvSlice.checkBoxId);
   const handleCheckboxChange = async (e, id, type) => {
-    dispatch(setCheckBoxId({id,type}))
+    dispatch(setCheckBoxId({ id, type }));
     dispatch(setCheckloading(true));
     const checkedData = {
       [type]: e.target.checked,
@@ -49,7 +48,7 @@ function Row(props) {
     data();
     dispatch(setCheckloading(false));
   };
-  console.log(checkBoxId,'asdfsadsadasfasf');
+  console.log(checkBoxId, "asdfsadsadasfasf");
   return (
     <React.Fragment>
       <TableRow
@@ -125,19 +124,29 @@ function Row(props) {
                             <Stack>
                               <Stack className="checkbox-wrapper-39">
                                 <label>
-                                {checkloading && e?.id===checkBoxId.id && checkBoxId.type==='doNotHave' ?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
-                                <input
-                                    onChange={(event) =>
-                                      handleCheckboxChange(
-                                        event,
-                                        e?.id,
-                                        "doNotHave"
-                                      )
-                                    }
-                                    checked={e?.doNotHave === 1}
-                                    type="checkbox"
-                                  /> <span className="checkbox"></span></>}  
-                                  
+                                  {checkloading &&
+                                  e?.id === checkBoxId.id &&
+                                  checkBoxId.type === "doNotHave" ? (
+                                    <CircularProgress
+                                      size={20}
+                                      sx={{ color: "inherit" }}
+                                    />
+                                  ) : (
+                                    <>
+                                      <input
+                                        onChange={(event) =>
+                                          handleCheckboxChange(
+                                            event,
+                                            e?.id,
+                                            "doNotHave"
+                                          )
+                                        }
+                                        checked={e?.doNotHave === 1}
+                                        type="checkbox"
+                                      />{" "}
+                                      <span className="checkbox"></span>
+                                    </>
+                                  )}
                                 </label>
                               </Stack>
                             </Stack>
@@ -146,20 +155,29 @@ function Row(props) {
                             <Stack>
                               <Stack className="checkbox-wrapper-39">
                                 <label>
-                                 {checkloading && e?.id===checkBoxId.id && checkBoxId.type==='needsImprovement'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
-                                 <input
-                                    onChange={(event) =>
-                                      handleCheckboxChange(
-                                        event,
-                                        e?.id,
-                                        "needsImprovement"
-                                      )
-                                    }
-                                    checked={e?.needsImprovement === 1}
-                                    type="checkbox"
-                                  />
-                                  <span className="checkbox"></span>
-                                 </>} 
+                                  {checkloading &&
+                                  e?.id === checkBoxId.id &&
+                                  checkBoxId.type === "needsImprovement" ? (
+                                    <CircularProgress
+                                      size={20}
+                                      sx={{ color: "inherit" }}
+                                    />
+                                  ) : (
+                                    <>
+                                      <input
+                                        onChange={(event) =>
+                                          handleCheckboxChange(
+                                            event,
+                                            e?.id,
+                                            "needsImprovement"
+                                          )
+                                        }
+                                        checked={e?.needsImprovement === 1}
+                                        type="checkbox"
+                                      />
+                                      <span className="checkbox"></span>
+                                    </>
+                                  )}
                                 </label>
                               </Stack>
                             </Stack>
@@ -172,21 +190,30 @@ function Row(props) {
                           >
                             <Stack>
                               <Stack className="checkbox-wrapper-39">
-                               <label>
-                                {checkloading && e?.id===checkBoxId.id && checkBoxId.type==='ready'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
-                                <input
-                                    onChange={(event) =>
-                                      handleCheckboxChange(
-                                        event,
-                                        e?.id,
-                                        "ready"
-                                      )
-                                    }
-                                    checked={e?.ready === 1}
-                                    type="checkbox"
-                                  />
-                                  <span className="checkbox"></span>
-                                </>}
+                                <label>
+                                  {checkloading &&
+                                  e?.id === checkBoxId.id &&
+                                  checkBoxId.type === "ready" ? (
+                                    <CircularProgress
+                                      size={20}
+                                      sx={{ color: "inherit" }}
+                                    />
+                                  ) : (
+                                    <>
+                                      <input
+                                        onChange={(event) =>
+                                          handleCheckboxChange(
+                                            event,
+                                            e?.id,
+                                            "ready"
+                                          )
+                                        }
+                                        checked={e?.ready === 1}
+                                        type="checkbox"
+                                      />
+                                      <span className="checkbox"></span>
+                                    </>
+                                  )}
                                 </label>
                               </Stack>
                             </Stack>{" "}
@@ -252,7 +279,7 @@ export default function DataQualityTable() {
     fetchData();
   }, []);
   if (loading) return <Loading />;
-  
+
   return (
     <Stack spacing={2}>
       <CardComponent text={"Data Quality"} />
@@ -386,8 +413,12 @@ export default function DataQualityTable() {
               </TableRow>
               <TableRow sx={{ bgcolor: "#a7e5fbcc" }}>
                 {/* <TableCell /> */}
-                <TableCell sx={{ fontWeight: 600, p:'37px'}}>Variable List</TableCell>
-                <TableCell sx={{ fontWeight: 600,p:'37px' }}>Definition</TableCell>
+                <TableCell sx={{ fontWeight: 600, p: "37px" }}>
+                  Variable List
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, p: "37px" }}>
+                  Definition
+                </TableCell>
                 {/* <TableCell
                   sx={{ fontWeight: 600 }}
                 >
