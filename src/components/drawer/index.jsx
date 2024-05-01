@@ -16,6 +16,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import Person2Icon from '@mui/icons-material/Person2';
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Analytics,
   AutoGraph,
@@ -323,13 +325,14 @@ export default function MiniDrawer({ pages }) {
           <Divider />
           <List>
             {[
-              { name: "Profile Edit", path: "profile" },
-              { name: "Logout", path: "/" },
+              { name: "Profile Edit", path: "profile",icon:< Person2Icon /> },
+              { name: "Logout",icon:<LogoutIcon/>,onclick:()=>{localStorage.clear();navigate('/',{replace:true})} },
             ].map((text, index) => (
               <NavLink
+              onClick={text.onclick}
                 key={text}
                 to={text.path}
-                style={{ color: "inherit", textDecoration: "none" }}
+                style={{ color: "black", textDecoration: "none" }}
               >
                 <ListItem
                   disablePadding
