@@ -104,7 +104,6 @@ export default function MiniDrawer({ pages }) {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [active, setActive] = React.useState(null);
-  const checkLoading=useSelector((state)=>state.CvSlice.checkLoading)
   const location = useLocation();
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -177,8 +176,7 @@ export default function MiniDrawer({ pages }) {
               Dashboard
             </Typography>
           </Box>
-          <Box sx={{display:'flex',alignItems:'center'}}>
-          {checkLoading && <CircularProgress sx={{color:'inherit'}}/>}
+          <Box >
             <Person
               sx={{
                 mt: "5px",

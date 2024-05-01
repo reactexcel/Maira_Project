@@ -14,12 +14,13 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
-import {  Stack } from "@mui/material";
+import {  CircularProgress, Stack } from "@mui/material";
 import LineChartComp from "../../../components/Chart/LineChartComp";
 // import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setCheckBoxId,
   setCheckloading,
   setData,
   setGraphState1,
@@ -32,8 +33,11 @@ import Loading from "../../../components/Referesh/Loading";
 function Row(props) {
   const { row, data } = props;
   const [open, setOpen] = React.useState(false);
+  const checkloading =useSelector((state)=>state.CvSlice.checkLoading)
+  const checkBoxId =useSelector((state)=>state.CvSlice.checkBoxId)
   const dispatch = useDispatch();
   const handleCheckBox = async (e, id, type) => {
+    dispatch(setCheckBoxId({id,type}))
     dispatch(setCheckloading(true));
     const checkedData = {
       ratingLevelId: id,
@@ -119,6 +123,7 @@ function Row(props) {
                           {features?.doNotHave}
                           <Stack class="checkbox-wrapper-39">
                             <label>
+                              {checkloading && features?.id===checkBoxId?.id && checkBoxId?.type==='doNotHave'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
                               <input
                                 checked={features?.check[0].doNotHave === 1}
                                 onClick={(e) =>
@@ -127,7 +132,8 @@ function Row(props) {
                                 type="checkbox"
                               />
                               <span className="checkbox"></span>
-                            </label>
+                           </>}
+                               </label>
                           </Stack>
                         </Stack>
                       </TableCell>
@@ -136,6 +142,7 @@ function Row(props) {
                           {features?.needsImprovement}
                           <Stack class="checkbox-wrapper-39">
                             <label>
+                              {checkloading && features?.id===checkBoxId.id && checkBoxId.type==='needsImprovement'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
                               <input
                                 checked={
                                   features?.check[0].needsImprovement === 1
@@ -150,7 +157,8 @@ function Row(props) {
                                 type="checkbox"
                               />
                               <span className="checkbox"></span>
-                            </label>
+                            </>}
+                              </label>
                           </Stack>
                         </Stack>
                       </TableCell>
@@ -159,6 +167,7 @@ function Row(props) {
                           {features?.ready}
                           <Stack class="checkbox-wrapper-39">
                             <label>
+                              {checkloading && features?.id===checkBoxId?.id && checkBoxId?.type==='ready'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
                               <input
                                 checked={features?.check[0].ready === 1}
                                 onClick={(e) =>
@@ -167,7 +176,8 @@ function Row(props) {
                                 type="checkbox"
                               />
                               <span className="checkbox"></span>
-                            </label>
+                            </>}
+                              </label>
                           </Stack>
                         </Stack>{" "}
                       </TableCell>

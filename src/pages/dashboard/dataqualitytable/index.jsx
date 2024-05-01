@@ -15,10 +15,11 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
-import { Stack } from "@mui/material";
+import { CircularProgress, Stack } from "@mui/material";
 import { instance } from "../../../axiosInstance/instance";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setCheckBoxId,
   setCheckloading,
   setData,
   setloading,
@@ -29,7 +30,10 @@ function Row(props) {
   const { row, data } = props;
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
+  const checkloading =useSelector((state)=>state.CvSlice.checkLoading)
+  const checkBoxId =useSelector((state)=>state.CvSlice.checkBoxId)
   const handleCheckboxChange = async (e, id, type) => {
+    dispatch(setCheckBoxId({id,type}))
     dispatch(setCheckloading(true));
     const checkedData = {
       [type]: e.target.checked,
@@ -45,6 +49,7 @@ function Row(props) {
     data();
     dispatch(setCheckloading(false));
   };
+  console.log(checkBoxId,'asdfsadsadasfasf');
   return (
     <React.Fragment>
       <TableRow
@@ -120,7 +125,8 @@ function Row(props) {
                             <Stack>
                               <Stack className="checkbox-wrapper-39">
                                 <label>
-                                  <input
+                                {checkloading && e?.id===checkBoxId.id && checkBoxId.type==='doNotHave' ?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
+                                <input
                                     onChange={(event) =>
                                       handleCheckboxChange(
                                         event,
@@ -130,8 +136,8 @@ function Row(props) {
                                     }
                                     checked={e?.doNotHave === 1}
                                     type="checkbox"
-                                  />
-                                  <span className="checkbox"></span>
+                                  /> <span className="checkbox"></span></>}  
+                                  
                                 </label>
                               </Stack>
                             </Stack>
@@ -140,7 +146,8 @@ function Row(props) {
                             <Stack>
                               <Stack className="checkbox-wrapper-39">
                                 <label>
-                                  <input
+                                 {checkloading && e?.id===checkBoxId.id && checkBoxId.type==='needsImprovement'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
+                                 <input
                                     onChange={(event) =>
                                       handleCheckboxChange(
                                         event,
@@ -152,6 +159,7 @@ function Row(props) {
                                     type="checkbox"
                                   />
                                   <span className="checkbox"></span>
+                                 </>} 
                                 </label>
                               </Stack>
                             </Stack>
@@ -164,8 +172,9 @@ function Row(props) {
                           >
                             <Stack>
                               <Stack className="checkbox-wrapper-39">
-                                <label>
-                                  <input
+                               <label>
+                                {checkloading && e?.id===checkBoxId.id && checkBoxId.type==='ready'?<CircularProgress size={20} sx={{color:'inherit'}}/>:<>
+                                <input
                                     onChange={(event) =>
                                       handleCheckboxChange(
                                         event,
@@ -177,6 +186,7 @@ function Row(props) {
                                     type="checkbox"
                                   />
                                   <span className="checkbox"></span>
+                                </>}
                                 </label>
                               </Stack>
                             </Stack>{" "}

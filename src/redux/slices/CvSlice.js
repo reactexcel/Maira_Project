@@ -7,6 +7,7 @@ const initialState = {
   grapState2: null,
   grapState3: null,
   checkLoading: false,
+  checkBoxId:null
 };
 const CvSlice = createSlice({
   name: "CvSlice",
@@ -36,8 +37,12 @@ const CvSlice = createSlice({
     },
     setCheckloading(state,action){
         state.checkLoading=action.payload
-    }
+    },
+    setCheckBoxId(state,action){
+      
+      state.checkBoxId=action.payload
+  }
   },
 });
-export const { setData, setloading,setGraphState1,setGraphState3,setGraphState2,setCheckloading } = CvSlice.actions;
+export const { setData, setloading,setGraphState1,setGraphState3,setGraphState2,setCheckloading,setCheckBoxId } = CvSlice.actions;
 export default CvSlice.reducer;
