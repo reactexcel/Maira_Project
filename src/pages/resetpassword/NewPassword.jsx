@@ -34,7 +34,7 @@ const CreatePassword = () => {
       setLoader(true);
       try {
         const response = await instance.post(
-          `http://116.202.210.102:8000/user/reset-pwd/${localStorage.getItem(
+          `api/user/reset-pwd/${localStorage.getItem(
             "token"
           )}`,values);
 

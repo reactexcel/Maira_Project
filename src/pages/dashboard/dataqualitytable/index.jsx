@@ -48,7 +48,6 @@ function Row(props) {
     data();
     dispatch(setCheckloading(false));
   };
-  console.log(checkBoxId, "asdfsadsadasfasf");
   return (
     <React.Fragment>
       <TableRow
@@ -58,7 +57,6 @@ function Row(props) {
           ":hover": {
             bgcolor: "#EDEDED",
             cursor: "pointer",
-            // border:'2px solid'
           },
         }}
       >

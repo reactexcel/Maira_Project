@@ -16,12 +16,6 @@ const CvSlice = createSlice({
     setData(state, action) {
       state.getData = action.payload;
     },
-    // setSingleUserData(state,action){
-    //     state.getSingleUserData=action.payload;
-    // },
-    // seUserId(state, action) {
-    //     state.UserId = action.payload;
-    //   },
     setloading(state, action) {
       state.isLoading = action.payload;
     },
