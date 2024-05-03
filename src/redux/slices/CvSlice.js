@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   getData: null,
-  getSingleUserData: [],
   isLoading: true,
   grapState1: null,
   grapState2: null,

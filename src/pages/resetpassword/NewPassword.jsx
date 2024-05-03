@@ -38,7 +38,6 @@ const CreatePassword = () => {
             "token"
           )}`,values);
 
-        // const result = await response.json();
         console.log("Success:", response);
         if (response.status) {
           toast.success("Reset Successfully", {

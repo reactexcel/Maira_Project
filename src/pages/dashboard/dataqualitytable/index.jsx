@@ -248,7 +248,7 @@ Row.propTypes = {
       })
     ).isRequired,
   }).isRequired,
-  data: PropTypes.func.isRequired, // Add this line for data prop validation
+  data: PropTypes.func.isRequired,
 };
 
 export default function DataQualityTable() {

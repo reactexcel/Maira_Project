@@ -16,7 +16,6 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
 import { CircularProgress, Stack } from "@mui/material";
 import LineChartComp from "../../../components/Chart/LineChartComp";
-// import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,6 +31,7 @@ import Loading from "../../../components/Referesh/Loading";
 
 function Row(props) {
   const { row, data } = props;
+  const ref=React.useRef(null)
   const [open, setOpen] = React.useState(false);
   const checkloading = useSelector((state) => state.CvSlice.checkLoading);
   const checkBoxId = useSelector((state) => state.CvSlice.checkBoxId);
@@ -41,15 +41,17 @@ function Row(props) {
     dispatch(setCheckloading(true));
     const checkedData = {
       ratingLevelId: id,
-      [type]: e.target.checked,
+      [type]: e.target?.checked,
     };
+    console.log(e.current?.value);
     try {
-      await instance.post("/api/organization/rating-check", checkedData);
-    } catch (error) {
+   await instance.post("/api/organization/rating-check", checkedData);  
+  } catch (error) {
       console.log(error);
     }
     data();
     dispatch(setCheckloading(false));
+
   };
   return (
     <React.Fragment>
@@ -116,7 +118,8 @@ function Row(props) {
                         },
                       }}
                     >
-                      <TableCell />
+                      <TableCell/>
+
                       <TableCell>{features?.ratingScale}</TableCell>
                       <TableCell sx={{ bgcolor: "#f17272" }}>
                         <Stack>
@@ -133,7 +136,10 @@ function Row(props) {
                               ) : (
                                 <>
                                   <input
+                                 ref={ref} 
                                     checked={features?.check[0].doNotHave === 1}
+                                    value={"doNotHave"}
+                                    name={features?.id}
                                     onClick={(e) =>
                                       handleCheckBox(
                                         e,
@@ -153,8 +159,9 @@ function Row(props) {
                       <TableCell sx={{ bgcolor: "#f3f39d" }}>
                         <Stack>
                           {features?.needsImprovement}
-                          <Stack class="checkbox-wrapper-39">
+                          <Stack className="checkbox-wrapper-39">
                             <label>
+                              
                               {checkloading &&
                               features?.id === checkBoxId.id &&
                               checkBoxId.type === "needsImprovement" ? (
@@ -165,9 +172,12 @@ function Row(props) {
                               ) : (
                                 <>
                                   <input
-                                    checked={
+                              
+                              checked={
                                       features?.check[0].needsImprovement === 1
                                     }
+                                    value={"needsImprovement"}
+                                    name={features?.id}
                                     onClick={(e) =>
                                       handleCheckBox(
                                         e,
@@ -200,9 +210,11 @@ function Row(props) {
                                 <>
                                   <input
                                     checked={features?.check[0].ready === 1}
+                                    value={"ready"}
                                     onClick={(e) =>
                                       handleCheckBox(e, features?.id, "ready")
                                     }
+                                    name={features?.id}
                                     type="checkbox"
                                   />
                                   <span className="checkbox"></span>
@@ -425,10 +437,11 @@ export default function OrgLevelRatingTable() {
                 <TableCell></TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Rating Scale</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>Do Not Have</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Ready</TableCell>
                 <TableCell sx={{ fontWeight: 600 }}>
                   Needs Improvement
                 </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>Ready</TableCell>
+                
               </TableRow>
             </TableHead>
             <TableBody>
