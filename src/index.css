@@ -25,7 +25,7 @@
 .checkbox-wrapper-39 input:checked ~ .checkbox {
   transform: rotate(45deg);
   width: 14px;
-  margin-left: 12px;
+  margin-left: 4px;
   border-color: #24c78e;
   border-top-color: transparent;
   border-left-color: transparent;

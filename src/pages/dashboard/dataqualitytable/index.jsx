@@ -48,6 +48,7 @@ function Row(props) {
     data();
     dispatch(setCheckloading(false));
   };
+
   return (
     <React.Fragment>
       <TableRow
@@ -69,6 +70,7 @@ function Row(props) {
           colSpan={11}
           sx={{
             fontWeight: 600,
+            textTransform: "capitalize",
           }}
         >
           {row?.headerName}
@@ -90,14 +92,60 @@ function Row(props) {
                   <TableRow
                     sx={{
                       background: "linear-gradient(to right, pink,lightblue)",
+                     
                     }}
                   >
                     <TableCell
                       align="center"
                       colSpan={11}
-                      sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: "calc(6px + 1vmin)",
+                        textTransform: "capitalize",
+                      }}
                     >
                       {row.headerName}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell />
+
+                    <TableCell
+                      colSpan={3}
+                      align="center"
+                      sx={{
+                        bgcolor: "#7c4aa3",
+                        color: "white",
+                        fontWeight: 600,
+                        borderRight:  "5px solid white",
+                      }}
+                    >
+                      <Typography variant="body2">Validity</Typography>
+                    </TableCell>
+                    <TableCell
+                      colSpan={3}
+                      align="center"
+                      sx={{
+                        bgcolor: "#20388B",
+                        color: "white",
+                        fontWeight: 600,
+                        borderRight:  "5px solid white",
+                      }}
+                    >
+                      <Typography variant="body2">Consistency</Typography>
+                    </TableCell>
+                    <TableCell
+                      colSpan={3}
+                      align="center"
+                      sx={{
+                        bgcolor: "#0A3B06",
+                        color: "white",
+                        fontWeight: 600,
+
+                      }}
+                    >
+                      <Typography variant="body2">Variability</Typography>
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -110,17 +158,21 @@ function Row(props) {
                         ":hover": {
                           bgcolor: "#EDEDED",
                         },
+                        textTransform: "capitalize",
                       }}
                     >
                       <TableCell>{e.variableList}</TableCell>
-                      <TableCell>{e.Definition}</TableCell>
+                      <TableCell>
+                        {e.variableList === "Staffing Loads" && e.Definition}
+                      </TableCell>
 
                       {/* <TableCell /> */}
+
                       {e?.subColounms.map((e, i) => (
                         <>
                           <TableCell key={e?.id} sx={{ bgcolor: "#f17272" }}>
                             <Stack>
-                              <Stack className="checkbox-wrapper-39">
+                              <Stack sx={{alignItems:'center',justifyContent:'center'}} className="checkbox-wrapper-39">
                                 <label>
                                   {checkloading &&
                                   e?.id === checkBoxId.id &&
@@ -151,7 +203,7 @@ function Row(props) {
                           </TableCell>
                           <TableCell sx={{ bgcolor: "#f3f39d" }}>
                             <Stack>
-                              <Stack className="checkbox-wrapper-39">
+                              <Stack sx={{alignItems:'center',justifyContent:'center'}} className="checkbox-wrapper-39">
                                 <label>
                                   {checkloading &&
                                   e?.id === checkBoxId.id &&
@@ -187,7 +239,7 @@ function Row(props) {
                             }}
                           >
                             <Stack>
-                              <Stack className="checkbox-wrapper-39">
+                              <Stack sx={{alignItems:'center',justifyContent:'center'}} className="checkbox-wrapper-39">
                                 <label>
                                   {checkloading &&
                                   e?.id === checkBoxId.id &&
@@ -276,6 +328,40 @@ export default function DataQualityTable() {
     };
     fetchData();
   }, []);
+  const headerData = [
+    {
+      header1: "Do Not Have",
+      header2: "Need Improvement",
+      header3: "Ready",
+      header1Data:
+        "errors are found (e.g. missing values or impossible values, like negative hours worked)",
+      header2Data:
+        "measurement error is present, (e.g. there are outliers of some occurrences that do not seem to be plausible)",
+      header3Data:
+        "the organization has validated that the data collected represents the phenomenon it purports to measure with no errors.",
+    },
+    {
+      header1: "Do Not Have",
+      header2: "Need Improvement",
+      header3: "Ready",
+      header1Data:
+        "data representing the same phenomenon are recorded differently and have different definitions",
+      header2Data:
+        "data that represent the same phenomenon are recorded differently, despite having the same definition",
+      header3Data:
+        "data representing the same phenomenon have the same definition and are recorded the same",
+    },
+    {
+      header1: "Do Not Have",
+      header2: "Need Improvement",
+      header3: "Ready",
+      header1Data: "Measures tend to get the same score all the time",
+      header2Data:
+        "the measurement is sensitive enough to measure when something out of the ordinary happens",
+      header3Data:
+        "the measure is sensitive enough to defect the differences between everything commonly occurring",
+    },
+  ];
   if (loading) return <Loading />;
 
   return (
@@ -287,6 +373,7 @@ export default function DataQualityTable() {
           bgcolor: "#fff",
           borderRadius: "25px",
           boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px;",
+          textTransform:'capitalize'
         }}
       >
         <Typography
@@ -312,7 +399,7 @@ export default function DataQualityTable() {
         >
           <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
             <TableHead>
-              <TableRow>
+              <TableRow sx={{ textTransform: "capitalize" }}>
                 {/* <TableCell></TableCell> */}
                 <TableCell align="center" colSpan={2}>
                   {/* <img src="/images/image (2).png" alt="image" width={"50%"} /> */}
@@ -341,11 +428,13 @@ export default function DataQualityTable() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ textAlign: "center", height: "74px" }}
+                    sx={{ textAlign: "center", height:"40px" }}
                   >
-                    Validity assesses the extent to which inferences from the
+                    {/* Validity assesses the extent to which inferences from the
                     data accurately represents the “real world” phenomenon
-                    targeted by the measurement.
+                    targeted by the measurement. */}
+                    Refers to the extent to which measures accurately represent
+                    the &quot;real world&quot; phenomenon targeted.
                   </Typography>
                   {/* </Stack> */}
                 </TableCell>
@@ -373,10 +462,12 @@ export default function DataQualityTable() {
 
                   <Typography
                     variant="body2"
-                    sx={{ textAlign: "center", height: "74px" }}
+                    sx={{ textAlign: "center", height:"40px" }}
                   >
-                    Consistency refers to the absence of a difference, when
-                    comparing two or more variables against a definition.
+                    {/* Consistency refers to the absence of a difference, when
+                    comparing two or more variables against a definition. */}
+                    Refers to the Consistency of measurement across time and
+                    units
                   </Typography>
                   {/* </Stack> */}
                 </TableCell>
@@ -401,54 +492,72 @@ export default function DataQualityTable() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ textAlign: "center", height: "74px" }}
+                    sx={{ textAlign: "center", height:"40px" }}
                   >
-                    Variance is defined as the distance of a measure from the
-                    mean of the total sample of measures
+                    {/* Variance is defined as the distance of a measure from the
+                    mean of the total sample of measures */}
+                    Refers to the ability of a measure differences accorss time
+                    and units
                   </Typography>
                   {/* </Stack> */}
                 </TableCell>
               </TableRow>
-              <TableRow sx={{ bgcolor: "#a7e5fbcc" }}>
-                {/* <TableCell /> */}
-                <TableCell sx={{ fontWeight: 600, p: "37px" }}>
+              <TableRow sx={{ bgcolor: "#a7e5fbcc",fontSize:'0.875rem' }}>
+                <TableCell rowSpan={2} sx={{ fontWeight: 600, p: "37px", }}>
                   Variable List
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600, p: "37px" }}>
+                <TableCell rowSpan={2} sx={{ fontWeight: 600, p: "37px" }}>
                   Definition
                 </TableCell>
-                {/* <TableCell
-                  sx={{ fontWeight: 600 }}
-                >
-                  Org Metrics
-                </TableCell> */}
-                {[1, 2, 3].map((e, i) => (
+
+                {headerData.map((e, i) => (
+                  <>
+                    <TableCell
+                      sx={{
+                        color: "#971a1a",
+                        fontWeight: 600,
+                        bgcolor: "#f17272",
+                        textAlign: "center",
+                      }}
+                    >
+                      {e.header1}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "rgb(89 95 6 / 87%)",
+                        fontWeight: 600,
+                        bgcolor: "#f3f39d",
+                        textAlign: "center",
+                      }}
+                    >
+                      {e.header2}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: "rgb(18 55 0 / 87%)",
+                        fontWeight: 600,
+                        bgcolor: "#9bebbb",
+                        textAlign: "center",
+                        borderRight: i !== 2 && "5px solid white",
+                      }}
+                    >
+                      {e.header3}
+                    </TableCell>
+                  </>
+                ))}
+              </TableRow>
+              <TableRow
+                sx={{ bgcolor: "#a7e5fbcc", textTransform: "capitalize",fontSize:'0.875rem' }}
+              >
+                {headerData.map((e, i) => (
                   <>
                     <TableCell sx={{ bgcolor: "#f17272", textAlign: "center" }}>
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "#971a1a", fontWeight: 600 }}
-                      >
-                        Do Not Have
-                      </Typography>
-                      <Typography variant="body2" sx={{ height: "220px" }}>
-                        errors are found (e.g. missing values or impossible
-                        values, like negative hours worked)
-                      </Typography>
+                      {e.header1Data}
                     </TableCell>
                     <TableCell sx={{ bgcolor: "#f3f39d", textAlign: "center" }}>
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "rgb(89 95 6 / 87%)", fontWeight: 600 }}
-                      >
-                        Needs Improvement
-                      </Typography>
-
-                      <Typography variant="body2" sx={{ height: "220px" }}>
-                        errors are found (e.g. missing values or impossible
-                        values, like negative hours worked)
-                      </Typography>
-                    </TableCell>
+                     
+                      {e.header2Data}
+                     </TableCell>
                     <TableCell
                       sx={{
                         bgcolor: "#9bebbb",
@@ -456,17 +565,8 @@ export default function DataQualityTable() {
                         textAlign: "center",
                       }}
                     >
-                      <Typography
-                        variant="body2"
-                        sx={{ color: "rgb(18 55 0 / 87%)", fontWeight: 600 }}
-                      >
-                        Ready
-                      </Typography>
-                      <Typography variant="body2" sx={{ height: "220px" }}>
-                        errors are found (e.g. missing values or impossible
-                        values, like negative hours worked)
-                      </Typography>
-                    </TableCell>
+                      {e.header3Data}
+                     </TableCell>
                   </>
                 ))}
               </TableRow>

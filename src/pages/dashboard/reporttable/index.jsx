@@ -22,7 +22,6 @@ const colorCode = (value) => {
 };
 
 export default function ReportTable() {
-  // const [fetchedData, setFetchedData] = useState(null);
   const dispatch = useDispatch();
   const [reportLoading, setReportLoading] = useState(true);
   const fetchedData = useSelector((state) => state?.CvSlice?.getData);
@@ -47,7 +46,14 @@ export default function ReportTable() {
     return <Loading />;
   }
   return (
-    <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
+    <Box
+      sx={{
+        display: "flex",
+        gap: 2,
+        flexDirection: "column",
+        textTransform: "capitalize",
+      }}
+    >
       <CardComponent text={"Report"} />
       <Box
         sx={{

@@ -165,7 +165,7 @@ const loading=useSelector((state)=>state?.CvSlice?.isLoading)
   }, []);
 if(loading) return <Loading/>
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} sx={{textTransform:'capitalize'}}>
       <CardComponent text={"Data Matrix Summary"} />
       <Box
         sx={{

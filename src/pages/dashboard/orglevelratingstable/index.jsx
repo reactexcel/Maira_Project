@@ -62,20 +62,21 @@ function Row(props) {
           ":hover": {
             bgcolor: "#EDEDED",
             cursor: "pointer",
+
           },
         }}
       >
-        <TableCell>
+        <TableCell >
           <IconButton aria-label="expand row">
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-        </TableCell>
-        <TableCell sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)" }}>
+        </TableCell  >
+        <TableCell sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)",textTransform:'capitalize'}}>
           {row?.title}
         </TableCell>
         <TableCell
           colSpan={3}
-          sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)" }}
+          sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)",textTransform:'capitalize' }}
         >
           {" "}
           {row?.description}
@@ -90,6 +91,7 @@ function Row(props) {
                 borderRadius: "25px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
+                  textTransform:'capitalize'
               }}
             >
               {row?.features?.map((features, i) => (
@@ -103,7 +105,7 @@ function Row(props) {
                       <TableCell
                         align="center"
                         colSpan={5}
-                        sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)" }}
+                        sx={{ fontWeight: 600, }}
                       >
                         {features?.scaleName}
                       </TableCell>
@@ -122,8 +124,11 @@ function Row(props) {
 
                       <TableCell>{features?.ratingScale}</TableCell>
                       <TableCell sx={{ bgcolor: "#f17272" }}>
-                        <Stack>
+                        <Stack sx={{alignItems:'center',justifyContent:'center',textAlign:'center'}}>
+                          <Typography>
                           {features?.doNotHave}
+
+                          </Typography>
                           <Stack class="checkbox-wrapper-39">
                             <label>
                               {checkloading &&
@@ -157,8 +162,11 @@ function Row(props) {
                         </Stack>
                       </TableCell>
                       <TableCell sx={{ bgcolor: "#f3f39d" }}>
-                        <Stack>
+                        <Stack sx={{alignItems:'center',justifyContent:'center',textAlign:'center'}}>
+                          <Typography>
+
                           {features?.needsImprovement}
+                          </Typography>
                           <Stack className="checkbox-wrapper-39">
                             <label>
                               
@@ -195,9 +203,12 @@ function Row(props) {
                         </Stack>
                       </TableCell>
                       <TableCell sx={{ bgcolor: "#9bebbb" }}>
-                        <Stack>
+                        <Stack sx={{alignItems:'center',justifyContent:'center',textAlign:'center'}}>
+                          <Typography>
+
                           {features?.ready}
-                          <Stack class="checkbox-wrapper-39">
+                          </Typography>
+                          <Stack  class="checkbox-wrapper-39">
                             <label>
                               {checkloading &&
                               features?.id === checkBoxId?.id &&
@@ -407,7 +418,7 @@ export default function OrgLevelRatingTable() {
       >
         <Typography
           variant="subtitle1"
-          sx={{ fontSize: "22px", fontWeight: 600 }}
+          sx={{ fontSize: "22px", fontWeight: 600,textTransform:'capitalize' }}
         >
           Rate the level&apos;s data readiness for the following organizational
           success factors:{" "}
@@ -446,7 +457,7 @@ export default function OrgLevelRatingTable() {
             </TableHead>
             <TableBody>
               {fetchedData?.data?.map((row) => (
-                <Row key={row?.title} row={row} data={data} />
+                <Row  key={row?.title} row={row} data={data} />
               ))}
             </TableBody>
           </Table>
@@ -478,15 +489,16 @@ export default function OrgLevelRatingTable() {
             datasetsLabel={"Rules and Operations"}
             dataSet={graphState1}
           />
+            <LineChartComp
+              labels={["Employee Participation", "Management Use"]}
+              datasetsLabel={"Measurement Culture"}
+              yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
+              
+              dataSet={graphState2}
+            />
           <LineChartComp
             labels={["Personnel", "Centralized Database"]}
             datasetsLabel={"Foundational Infrastructure"}
-            yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
-            dataSet={graphState2}
-          />
-          <LineChartComp
-            labels={["Employee Participation", "Management Use"]}
-            datasetsLabel={"Measurement Culture"}
             yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
             dataSet={graphState3}
           />
