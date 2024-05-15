@@ -51,7 +51,9 @@ function Row(props) {
 
   return (
     <React.Fragment>
-      <TableRow
+    <TableRow>
+    <TableCell>
+      <Box
         onClick={() => setOpen(!open)}
         sx={{
           "& > *": { borderBottom: "unset" },
@@ -59,40 +61,39 @@ function Row(props) {
             bgcolor: "#EDEDED",
             cursor: "pointer",
           },
+          p:2
         }}
       >
-        <TableCell>
-          <IconButton aria-label="expand row">
+          <IconButton >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-        </TableCell>
-        <TableCell
+      </Box>
+      </TableCell>
+      <TableCell
           colSpan={11}
           sx={{
             fontWeight: 600,
-            textTransform: "capitalize",
+            // fontSize: "calc(5px + 1vmin)",
           }}
         >
           {row?.headerName}
         </TableCell>
-      </TableRow>
+        </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={"100%"}>
+        <TableCell style={{ padding: "0px" }} colSpan={"100%"}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box
               sx={{
-                my: 1,
                 borderRadius: "25px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
               }}
             >
-              <Table>
+              {/* <Table> */}
                 <TableHead>
                   <TableRow
                     sx={{
                       background: "linear-gradient(to right, pink,lightblue)",
-                     
                     }}
                   >
                     <TableCell
@@ -108,8 +109,26 @@ function Row(props) {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell />
-                    <TableCell />
+                    <TableCell
+                      align="center"
+                      sx={{
+                        bgcolor: "gray",
+                        color: "white",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Variable List
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        bgcolor: "gray",
+                        color: "white",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Definition
+                    </TableCell>
 
                     <TableCell
                       colSpan={3}
@@ -118,7 +137,7 @@ function Row(props) {
                         bgcolor: "#7c4aa3",
                         color: "white",
                         fontWeight: 600,
-                        borderRight:  "5px solid white",
+                        borderRight: "5px solid white",
                       }}
                     >
                       <Typography variant="body2">Validity</Typography>
@@ -130,7 +149,7 @@ function Row(props) {
                         bgcolor: "#20388B",
                         color: "white",
                         fontWeight: 600,
-                        borderRight:  "5px solid white",
+                        borderRight: "5px solid white",
                       }}
                     >
                       <Typography variant="body2">Consistency</Typography>
@@ -142,7 +161,6 @@ function Row(props) {
                         bgcolor: "#0A3B06",
                         color: "white",
                         fontWeight: 600,
-
                       }}
                     >
                       <Typography variant="body2">Variability</Typography>
@@ -166,44 +184,49 @@ function Row(props) {
                         {e.variableList === "Staffing Loads" && e.Definition}
                       </TableCell>
 
-                      {/* <TableCell /> */}
-
                       {e?.subColounms.map((e, i) => (
                         <>
                           <TableCell key={e?.id} sx={{ bgcolor: "#f17272" }}>
-                            <Stack>
-                              <Stack sx={{alignItems:'center',justifyContent:'center'}} className="checkbox-wrapper-39">
-                                <label>
-                                  {checkloading &&
-                                  e?.id === checkBoxId.id &&
-                                  checkBoxId.type === "doNotHave" ? (
-                                    <CircularProgress
-                                      size={20}
-                                      sx={{ color: "inherit" }}
-                                    />
-                                  ) : (
-                                    <>
-                                      <input
-                                        onChange={(event) =>
-                                          handleCheckboxChange(
-                                            event,
-                                            e?.id,
-                                            "doNotHave"
-                                          )
-                                        }
-                                        checked={e?.doNotHave === 1}
-                                        type="checkbox"
-                                      />{" "}
-                                      <span className="checkbox"></span>
-                                    </>
-                                  )}
-                                </label>
-                              </Stack>
+                            <Stack
+                              sx={{ alignItems: "center" }}
+                              className="checkbox-wrapper-39"
+                            >
+                              <label>
+                                {checkloading &&
+                                e?.id === checkBoxId.id &&
+                                checkBoxId.type === "doNotHave" ? (
+                                  <CircularProgress
+                                    size={20}
+                                    sx={{ color: "inherit" }}
+                                  />
+                                ) : (
+                                  <>
+                                    <input
+                                      onChange={(event) =>
+                                        handleCheckboxChange(
+                                          event,
+                                          e?.id,
+                                          "doNotHave"
+                                        )
+                                      }
+                                      checked={e?.doNotHave === 1}
+                                      type="checkbox"
+                                    />{" "}
+                                    <span className="checkbox"></span>
+                                  </>
+                                )}
+                              </label>
                             </Stack>
                           </TableCell>
                           <TableCell sx={{ bgcolor: "#f3f39d" }}>
                             <Stack>
-                              <Stack sx={{alignItems:'center',justifyContent:'center'}} className="checkbox-wrapper-39">
+                              <Stack
+                                sx={{
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                                className="checkbox-wrapper-39"
+                              >
                                 <label>
                                   {checkloading &&
                                   e?.id === checkBoxId.id &&
@@ -239,7 +262,13 @@ function Row(props) {
                             }}
                           >
                             <Stack>
-                              <Stack sx={{alignItems:'center',justifyContent:'center'}} className="checkbox-wrapper-39">
+                              <Stack
+                                sx={{
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                                className="checkbox-wrapper-39"
+                              >
                                 <label>
                                   {checkloading &&
                                   e?.id === checkBoxId.id &&
@@ -273,7 +302,7 @@ function Row(props) {
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
+              {/* </Table> */}
             </Box>
           </Collapse>
         </TableCell>
@@ -373,7 +402,7 @@ export default function DataQualityTable() {
           bgcolor: "#fff",
           borderRadius: "25px",
           boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px;",
-          textTransform:'capitalize'
+          textTransform: "capitalize",
         }}
       >
         <Typography
@@ -400,11 +429,10 @@ export default function DataQualityTable() {
           <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
             <TableHead>
               <TableRow sx={{ textTransform: "capitalize" }}>
-                {/* <TableCell></TableCell> */}
-                <TableCell align="center" colSpan={2}>
-                  {/* <img src="/images/image (2).png" alt="image" width={"50%"} /> */}
+                <TableCell >{""}</TableCell>
+                <TableCell>
+                  {""}
                 </TableCell>
-
                 <TableCell
                   sx={{
                     borderRight: "5px solid white",
@@ -413,7 +441,6 @@ export default function DataQualityTable() {
                   }}
                   colSpan={3}
                 >
-                  {/* <Stack sx={{textAlign:'center'}} > */}
                   <Typography
                     variant="body2"
                     sx={{
@@ -428,7 +455,7 @@ export default function DataQualityTable() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ textAlign: "center", height:"40px" }}
+                    sx={{ textAlign: "center", height: "45px" }}
                   >
                     {/* Validity assesses the extent to which inferences from the
                     data accurately represents the “real world” phenomenon
@@ -436,7 +463,6 @@ export default function DataQualityTable() {
                     Refers to the extent to which measures accurately represent
                     the &quot;real world&quot; phenomenon targeted.
                   </Typography>
-                  {/* </Stack> */}
                 </TableCell>
                 <TableCell
                   sx={{
@@ -446,7 +472,6 @@ export default function DataQualityTable() {
                   }}
                   colSpan={3}
                 >
-                  {/* <Stack sx={{height:'100%',textAlign:'center'}} spacing={2}> */}
                   <Typography
                     variant="body2"
                     sx={{
@@ -462,14 +487,13 @@ export default function DataQualityTable() {
 
                   <Typography
                     variant="body2"
-                    sx={{ textAlign: "center", height:"40px" }}
+                    sx={{ textAlign: "center", height: "45px" }}
                   >
                     {/* Consistency refers to the absence of a difference, when
                     comparing two or more variables against a definition. */}
                     Refers to the Consistency of measurement across time and
                     units
                   </Typography>
-                  {/* </Stack> */}
                 </TableCell>
                 <TableCell
                   colSpan={3}
@@ -478,7 +502,6 @@ export default function DataQualityTable() {
                       "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;",
                   }}
                 >
-                  {/* <Stack sx={{height:'100%',textAlign:'center'}} spacing={2} > */}
                   <Typography
                     variant="body2"
                     sx={{
@@ -492,22 +515,21 @@ export default function DataQualityTable() {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ textAlign: "center", height:"40px" }}
+                    sx={{ textAlign: "center", height: "45px" }}
                   >
                     {/* Variance is defined as the distance of a measure from the
                     mean of the total sample of measures */}
                     Refers to the ability of a measure differences accorss time
                     and units
                   </Typography>
-                  {/* </Stack> */}
                 </TableCell>
               </TableRow>
-              <TableRow sx={{ bgcolor: "#a7e5fbcc",fontSize:'0.875rem' }}>
-                <TableCell rowSpan={2} sx={{ fontWeight: 600, p: "37px", }}>
-                  Variable List
+              <TableRow sx={{ bgcolor: "#a7e5fbcc", fontSize: "0.875rem" }}>
+                <TableCell rowSpan={2} sx={{ fontWeight: 600 }}>
+                  {""}
                 </TableCell>
-                <TableCell rowSpan={2} sx={{ fontWeight: 600, p: "37px" }}>
-                  Definition
+                <TableCell rowSpan={2} sx={{ fontWeight: 600 }}>
+                  {""}
                 </TableCell>
 
                 {headerData.map((e, i) => (
@@ -547,7 +569,11 @@ export default function DataQualityTable() {
                 ))}
               </TableRow>
               <TableRow
-                sx={{ bgcolor: "#a7e5fbcc", textTransform: "capitalize",fontSize:'0.875rem' }}
+                sx={{
+                  bgcolor: "#a7e5fbcc",
+                  textTransform: "capitalize",
+                  fontSize: "0.875rem",
+                }}
               >
                 {headerData.map((e, i) => (
                   <>
@@ -555,9 +581,8 @@ export default function DataQualityTable() {
                       {e.header1Data}
                     </TableCell>
                     <TableCell sx={{ bgcolor: "#f3f39d", textAlign: "center" }}>
-                     
                       {e.header2Data}
-                     </TableCell>
+                    </TableCell>
                     <TableCell
                       sx={{
                         bgcolor: "#9bebbb",
@@ -566,14 +591,18 @@ export default function DataQualityTable() {
                       }}
                     >
                       {e.header3Data}
-                     </TableCell>
+                    </TableCell>
                   </>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {fetchedData?.data?.map((row) => (
-                <Row key={row.hederName} row={row} data={data} />
+                <Row
+                  key={row.hederName}
+                  row={row}
+                  data={data}
+                />
               ))}
             </TableBody>
           </Table>

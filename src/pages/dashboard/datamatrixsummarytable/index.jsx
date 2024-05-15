@@ -28,11 +28,19 @@ import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
 import { useDispatch, useSelector } from "react-redux";
 import { setData, setloading } from "../../../redux/slices/CvSlice";
+import DropdownMenu from "../../../utiles/CommonDropDown";
 
 function Row(props) {
-  const { row } = props;
+  const { row,getData } = props;
   const [open, setOpen] = React.useState(false);
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [type,setType]=React.useState(null)
+  const [id,setId]=React.useState(null)
+  const handleClick = (event,t,id) => {
+    setAnchorEl(event.currentTarget);
+    setType(t)
+    setId(id);
+  };
   return (
     <React.Fragment>
       <TableRow
@@ -66,7 +74,7 @@ function Row(props) {
             <Box
               sx={{
                 my: 1,
-                borderRadius: "25px",
+                // borderRadius: "25px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
               }}
@@ -102,16 +110,16 @@ function Row(props) {
                       <TableCell >
                         {eItem?.variableList}
                       </TableCell>
-                      {eItem?.subColounms?.map((e, i) => (
+                      {eItem?.subColounms?.map((el, i) => (
                         <React.Fragment key={i}>
-                          {e.value === 1 ? (
-                            <TableCell sx={{bgcolor:'#f17272', textAlign:'center'}}>Do Not Have</TableCell>
-                          ) : e.value === 2 ? (
-                            <TableCell sx={{bgcolor:'#f3f39d',textAlign:'center'}}>Need Improvement</TableCell>
-                          ) : e.value === 3 ? (
-                            <TableCell sx={{bgcolor:"#9bebbb",textAlign:'center'}}>Ready</TableCell>
+                          {el.value === 1 ? (
+                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{bgcolor:'#f17272', textAlign:'center'}}>Do Not Have</TableCell>
+                          ) : el.value === 2 ? (
+                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{bgcolor:'#f3f39d',textAlign:'center'}}>Need Improvement</TableCell>
+                          ) : el.value === 3 ? (
+                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{bgcolor:"#9bebbb",textAlign:'center'}}>Ready</TableCell>
                           ) : (
-                            <TableCell  >{e.value}</TableCell>
+                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)}>{el.value}</TableCell>
                           )}
                         </React.Fragment>
                       ))}
@@ -123,6 +131,7 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
+      <DropdownMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} getData={getData} type={type} id={id} />
     </React.Fragment>
   );
 }
@@ -147,20 +156,20 @@ export default function Datamatrixsummarytable() {
   const dispatch=useDispatch()
 const fetchData=useSelector((state)=>state?.CvSlice?.getData)
 const loading=useSelector((state)=>state?.CvSlice?.isLoading)
-  React.useEffect(() => {
-    const getData = async () => {
-    dispatch(setloading(true))
-      try {
-        const res = await instance.get("/api/data-quality/overview");
-        if (res.status === 200) {
-          dispatch(setData(res?.data?.data))
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        dispatch(setloading(false))
+const getData = async () => {
+  dispatch(setloading(true))
+    try {
+      const res = await instance.get("/api/data-quality/overview");
+      if (res.status === 200) {
+        dispatch(setData(res?.data?.data))
       }
-    };
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dispatch(setloading(false))
+    }
+  };
+  React.useEffect(() => {
     getData();
   }, []);
 if(loading) return <Loading/>
@@ -241,7 +250,7 @@ if(loading) return <Loading/>
             </TableHead>
             {fetchData?.modifiedData?.map((row, i) => (
               <TableBody key={i}>
-                <Row row={row} />
+                <Row row={row} getData={getData} />
               </TableBody>
             ))}
           </Table>

@@ -53,6 +53,7 @@ function Row(props) {
     dispatch(setCheckloading(false));
 
   };
+ 
   return (
     <React.Fragment>
       <TableRow
@@ -70,13 +71,13 @@ function Row(props) {
           <IconButton aria-label="expand row">
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-        </TableCell  >
-        <TableCell sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)",textTransform:'capitalize'}}>
+        </TableCell>
+        <TableCell sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)"}}>
           {row?.title}
         </TableCell>
         <TableCell
           colSpan={3}
-          sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)",textTransform:'capitalize' }}
+          sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)",}}
         >
           {" "}
           {row?.description}
@@ -91,7 +92,7 @@ function Row(props) {
                 borderRadius: "25px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
-                  textTransform:'capitalize'
+                  // textTransform:'capitalize'
               }}
             >
               {row?.features?.map((features, i) => (
@@ -418,7 +419,7 @@ export default function OrgLevelRatingTable() {
       >
         <Typography
           variant="subtitle1"
-          sx={{ fontSize: "22px", fontWeight: 600,textTransform:'capitalize' }}
+          sx={{ fontSize: "22px", fontWeight: 600}}
         >
           Rate the level&apos;s data readiness for the following organizational
           success factors:{" "}
