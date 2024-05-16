@@ -121,7 +121,7 @@ function Row(props) {
                           ) : el.value === 3 ? (
                             <TableCell sx={{textAlign:'center'}}><Chip label="Ready" color="success" onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}}/></TableCell>
                           ) : (
-                            <TableCell sx={{textAlign:'center'}}><Chip label={el.value} color="primary"  onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px",textTransform:'capitalize'}} /></TableCell>
+                            <TableCell sx={{textAlign:'center'}}><Chip label={el.value} onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px",textTransform:'capitalize'}} /></TableCell>
                           )}
                         </React.Fragment>
                       ))}

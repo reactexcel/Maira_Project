@@ -23,84 +23,92 @@ import { setData, setloading } from "../../../redux/slices/CvSlice";
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
-
+  const tHead = [
+    "Variable",
+    "Validity",
+    "Consistency",
+    "Variability",
+    "Adequate Coverage",
+    "Velocity",
+    "Harmonization",
+    "Personnel",
+    "Centralized Database",
+    "Employee Participation",
+    "Management Use",
+  ];
   return (
     <React.Fragment>
-      <TableRow
+      <Box
         onClick={() => setOpen(!open)}
         sx={{
-          // "& > *": { borderBottom: "unset" },
           ":hover": {
             bgcolor: "#EDEDED",
             cursor: "pointer",
           },
+          borderBottom: "1px solid lightgray",
+          display: "flex",
+          alignItems: "center",
+          gap: "50px",
+          py: 2,
+          px: 1,
         }}
       >
-        <TableCell>
-          <IconButton aria-label="expand row">
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
-        </TableCell>
-        <TableCell
-          colSpan={12}
+        <IconButton aria-label="expand row">
+          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        </IconButton>
+        <Typography
           sx={{
-            fontWeight: 600,
+            fontWeight: "bold",
+            color: "gray",
           }}
         >
           {row?.headerName}
-        </TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box
-              sx={{
-                my: 1,
-                // borderRadius: "25px",
-                boxShadow:
-                  "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
-              }}
-            >
-              <Table>
-                <TableHead>
+        </Typography>
+      </Box>
+      <Box>
+        <Collapse className="example" in={open} timeout="auto" unmountOnExit sx={{overflow:"auto"}}>
+          <Box>
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    background: "linear-gradient(to right, pink,lightblue)",
+                  }}
+                >
+                  {tHead.map((val, index) => (
+                    <TableCell
+                      key={index}
+                      sx={{ fontWeight: 600, textAlign: "center" }}
+                    >
+                      {val}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody sx={{ "& .MuiTableCell-root": { width: "200px" } }}>
+                {row?.columns?.map((eItem, i) => (
                   <TableRow
+                    key={i}
                     sx={{
-                      background: "linear-gradient(to right, pink,lightblue)",
+                      cursor: "pointer",
+                      ":hover": {
+                        bgcolor: "#EDEDED",
+                      },
                     }}
                   >
-                    <TableCell
-                      align="center"
-                      colSpan={11}
-                      sx={{ fontWeight: 600 }}
-                    >
-                      {row?.headerName}
-                    </TableCell>
+                    <TableCell sx={{fontWeight:"600",bgcolor:"gray",color:"#fff"}}>{eItem?.variableList}</TableCell>
+                    {eItem?.subColounms?.map((e, i) => (
+                      <TableCell key={i} sx={{ textAlign: "justify",fontWeight:"600",bgcolor:"lightgray" }}>
+                        {e.value}
+                      </TableCell>
+                    ))}
                   </TableRow>
-                </TableHead>
-                <TableBody sx={{ "& .MuiTableCell-root": { width: "200px" } }}>
-                  {row?.columns?.map((eItem, i) => (
-                    <TableRow
-                      key={i}
-                      sx={{
-                        cursor: "pointer",
-                        ":hover": {
-                          bgcolor: "#EDEDED",
-                        },
-                      }}
-                    >
-                      <TableCell>{eItem?.variableList}</TableCell>
-                      {eItem?.subColounms?.map((e, i) => (
-                        // obj.e.type =  obj.e.type + e.value
-                        <TableCell key={i}>{e.value}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Collapse>
+      </Box>
     </React.Fragment>
   );
 }
@@ -122,28 +130,28 @@ Row.propTypes = {
 };
 
 export default function DatamatrixsummarytableBack() {
-  const dispatch =useDispatch()
-  const fetchData=useSelector((state)=>state?.CvSlice?.getData)
-const loading=useSelector((state)=>state?.CvSlice?.isLoading)
-React.useEffect(() => {
-  const getData = async () => {
-    dispatch(setloading(true))
-    try {
-      const res = await instance.get("/api/data-quality/data-analytics");
-      if (res.status === 200) {
-        dispatch(setData(res?.data?.data))
+  const dispatch = useDispatch();
+  const fetchData = useSelector((state) => state?.CvSlice?.getData);
+  const loading = useSelector((state) => state?.CvSlice?.isLoading);
+  React.useEffect(() => {
+    const getData = async () => {
+      dispatch(setloading(true));
+      try {
+        const res = await instance.get("/api/data-quality/data-analytics");
+        if (res.status === 200) {
+          dispatch(setData(res?.data?.data));
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(setloading(false));
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      dispatch(setloading(false))
-    }
-  };
-  getData();
-}, []);
-if(loading) return <Loading/>
+    };
+    getData();
+  }, []);
+  if (loading) return <Loading />;
   return (
-    <Stack spacing={2} sx={{textTransform:'capitalize'}}>
+    <Stack spacing={2} sx={{ textTransform: "capitalize" }}>
       <CardComponent text={"Data Matrix Summary- Back"} />
       <Box
         sx={{
@@ -160,59 +168,50 @@ if(loading) return <Loading/>
           High-quality data are foundational for analyzing and using big data to
           realize value{" "}
         </Typography>
-        <TableContainer
-          component={Paper}
-          sx={{
-            borderRadius: "20px",
-            my: 2,
-            boxShadow:
-              "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
-            background: " linear-gradient(to bottom, pink,lightblue)",
-            // pl: "8px",
-          }}
-        >
-          <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 600 }}>Variable</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Validity</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Consistency</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Variability</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Adequate Coverage
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Velocity</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Harmonization</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Personnel</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Centralized Database
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Employee Participation
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Management Use</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-                {fetchData?.modifiedData?.map((row, i) => (
-                <Row key={i} row={row} />
-              ))}
-              <TableRow >
-                <TableCell sx={{fontWeight:600,textAlign:'center'}} >Average</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.validity}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.consistency}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.variability}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Adequate Coverage']}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.Velocity}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.Harmonization}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.Personnel}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Centralized Database']}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Employee Participation']}</TableCell>
-                <TableCell sx={{fontWeight:600,textAlign:'center'}}>{fetchData?.maxAppearance?.['Management Use']}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Box sx={{overflow:"hidden"}}>
+          {fetchData?.modifiedData?.map((row, i) => (
+            <Row key={i} row={row} />
+          ))}
+        </Box>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                Average
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.validity}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.consistency}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.variability}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.["Adequate Coverage"]}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.Velocity}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.Harmonization}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.Personnel}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.["Centralized Database"]}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.["Employee Participation"]}
+              </TableCell>
+              <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
+                {fetchData?.maxAppearance?.["Management Use"]}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+        </Table>
       </Box>
     </Stack>
   );
