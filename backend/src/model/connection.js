@@ -4,9 +4,9 @@ const mysql = require('mysql2/promise');
     const mysqlConfig  = {
       host : "localhost",
       port : 3306 , 
-      database :'maira',
+      database :process.env.dbName,
       user : 'root',
-      password : process.env.dbPassword, 
+      password :process.env.dbPassword,
      
     }
        let connection = (async()=>{
@@ -16,4 +16,3 @@ const mysql = require('mysql2/promise');
   module.exports = {
     connection
   } 
-

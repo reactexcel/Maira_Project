@@ -8,21 +8,20 @@ module.exports.getDataQualityData = async () => {
     JSON_OBJECT('doNotHave', validity.doNotHave, 'needsImprovement', validity.needsImprovement, 'ready', validity.ready) AS validity,
     JSON_OBJECT('doNotHave', consistency.doNotHave, 'needsImprovement', consistency.needsImprovement, 'ready', consistency.ready) AS consistency,
     JSON_OBJECT('doNotHave', variability.doNotHave, 'needsImprovement', variability.needsImprovement, 'ready', variability.ready) AS variability 
-    FROM  dataVariableList AS dv
+    FROM  datavariablelist AS dv
     LEFT JOIN datalevelcheck AS validity ON dv.validityId = validity.id
     LEFT JOIN datalevelcheck AS consistency ON dv.consistencyId = consistency.id
     LEFT JOIN datalevelcheck AS variability ON dv.variabilityId = variability.id
          `);
-
 
          const transformedData = {};
 
          data[0].forEach(item => {
            const {
              id,
-             referenceby,
-             variableshortDescription, 
-             defination, 
+             referenceBy,
+             variableShortDescription, 
+             definition, 
              validityId, 
              consistencyId, 
              variabilityId, 
@@ -30,16 +29,16 @@ module.exports.getDataQualityData = async () => {
              consistency, 
              variability
              } = item;
-           if (!transformedData[referenceby]) {
-             transformedData[referenceby] = {
-               headerName: referenceby,
+           if (!transformedData[referenceBy]) {
+             transformedData[referenceBy] = {
+               headerName: referenceBy,
                columns: []
              };
            }
          
-           transformedData[referenceby].columns.push({
-             variableList: variableshortDescription,
-             Definition: defination,
+           transformedData[referenceBy].columns.push({
+             variableList: variableShortDescription,
+             Definition: definition,
               subColounms:[{
                id:validityId,
                type:"validity",
@@ -74,38 +73,33 @@ module.exports.getDataQualityData = async () => {
 module.exports.dataLevelcheckUpdate = async (levelCheckId , body) => {
   try {
     let conn = await db.connection;
-    let datalevelCheckData = await conn.query(`SELECT * FROM datalevelcheck WHERE id = "${levelCheckId}"`);
-    datalevelCheckData = datalevelCheckData[0] ;
-    if (datalevelCheckData && datalevelCheckData.length) {
-      let updateQuery = 'UPDATE datalevelcheck SET ';
-      let updateFields = [];
-
-      if (body.doNotHave !== undefined) {
-        updateFields.push(`doNotHave = ${body.doNotHave ? 1 : 0}`);
-      }
-
-      if (body.needsImprovement !== undefined) {
-        updateFields.push(`needsImprovement = ${body.needsImprovement ? 1 : 0}`);
-      }
-
-      if (body.ready !== undefined) {
-        updateFields.push(`ready = ${body.ready ? 1 : 0}`);
-      }
-
-      if (updateFields.length > 0) {
-        updateQuery += updateFields.join(', ') + ` WHERE id = "${levelCheckId}"`;     
-        await conn.query(updateQuery);
-      }
-
-    let sum = await conn.query(`select doNotHave , needsImprovement , ready ,  (doNotHave + needsImprovement + ready) AS totalBooleanSum from datalevelcheck where id = "${levelCheckId}"`)
-      sum =  sum[0][0].totalBooleanSum 
-     await conn.query(`update datalevelcheck set  sum = "${sum}" where id = "${levelCheckId}" `  ) 
-
-    }
-    
-
+    if(body.doNotHave === true)
+       await conn.query(`update datalevelcheck set doNotHave =true, needsImprovement = false, ready = false where id = "${levelCheckId}"`)
+    else if(body.needsImprovement === true)
+       await conn.query(`update datalevelcheck set doNotHave =false, needsImprovement = true, ready = false where id = "${levelCheckId}"`)
+    else if(body.ready === true)
+      await conn.query(`update datalevelcheck set doNotHave =false, needsImprovement = false, ready = true where id = "${levelCheckId}"`)
+    else 
+      await conn.query(`update datalevelcheck set doNotHave =false, needsImprovement = false, ready = false where id = "${levelCheckId}"`) 
   } catch (err) {
     throw new Error(err)
   }
 };
+
+
+// module.exports.ratingCheckUpdate = async (levelCheckId , body) => {
+//   try {
+//     let conn = await db.connection;
+//     if(body.doNotHave === true)
+//        await conn.query(`update datalevelcheck2 set doNotHave =true, needsImprovement = false, ready = false where id = "${levelCheckId}"`)
+//     else if(body.needsImprovement === true)
+//        await conn.query(`update datalevelcheck2 set doNotHave =false, needsImprovement = true, ready = false where id = "${levelCheckId}"`)
+//     else if(body.ready === true)
+//       await conn.query(`update datalevelcheck2 set doNotHave =false, needsImprovement = false, ready = true where id = "${levelCheckId}"`)
+//     else 
+//       await conn.query(`update datalevelcheck2 set doNotHave =false, needsImprovement = false, ready = false where id = "${levelCheckId}"`) 
+//   } catch (err) {
+//     throw new Error(err)
+//   }
+// };
 
