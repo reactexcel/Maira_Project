@@ -72,12 +72,12 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)"}}>
+        <TableCell sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)",color:"gray"}}>
           {row?.title}
         </TableCell>
         <TableCell
           colSpan={3}
-          sx={{ fontWeight: 600, fontSize: "calc(5px + 1vmin)",}}
+          sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)",color:"gray"}}
         >
           {" "}
           {row?.description}
@@ -445,14 +445,14 @@ export default function OrgLevelRatingTable() {
             }}
           >
             <TableHead>
-              <TableRow sx={{ bgcolor: "#a7e5fbcc" }}>
+              <TableRow sx={{ bgcolor: "#a7e5fbcc"}}>
                 <TableCell></TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Rating Scale</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Do Not Have</TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
+                <TableCell sx={{ fontWeight: 600,color:"#696969" }}>Rating Scale</TableCell>
+                <TableCell sx={{ fontWeight: 600,color:"#696969"}}>Do Not Have</TableCell>
+                <TableCell sx={{ fontWeight: 600,color:"#696969" }}>
                   Needs Improvement
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>Ready</TableCell>
+                <TableCell sx={{ fontWeight: 600,color:"#696969" }}>Ready</TableCell>
                 
               </TableRow>
             </TableHead>

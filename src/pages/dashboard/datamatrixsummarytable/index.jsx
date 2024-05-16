@@ -23,7 +23,7 @@ import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CardComponent from "../../../components/card";
-import { Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 import Loading from "../../../components/Referesh/Loading";
 import { instance } from "../../../axiosInstance/instance";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,6 +41,19 @@ function Row(props) {
     setType(t)
     setId(id);
   };
+  const tHead = [
+    "Variable",
+    "Validity",
+    "Consistency",
+    "Variability",
+    "Adequate Coverage",
+    "Velocity",
+    "Harmonization",
+    "Personnel",
+    "Centralized Database",
+    "Employee Participation",
+    "Management Use",
+  ];
   return (
     <React.Fragment>
       <TableRow
@@ -59,7 +72,7 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell
-          colSpan={12}
+          colSpan={10}
           sx={{
             fontWeight: 600,
             // fontSize: "calc(5px + 1vmin)",
@@ -86,13 +99,11 @@ function Row(props) {
                       background: "linear-gradient(to right, pink,lightblue)",
                     }}
                   >
-                    <TableCell
-                      align="center"
-                      colSpan={11}
-                      sx={{ fontWeight: 600 }}
-                    >
-                      {row?.headerName}
-                    </TableCell>
+                     {tHead.map((val, index) => (
+                      <TableCell key={index} sx={{ fontWeight: 600 }}>
+                        {val}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ "& .MuiTableCell-root": { width: "200px" } }}>
@@ -106,20 +117,19 @@ function Row(props) {
                         },
                       }}
                     >
-                      {/* <TableCell /> */}
-                      <TableCell >
+                      <TableCell>
                         {eItem?.variableList}
                       </TableCell>
                       {eItem?.subColounms?.map((el, i) => (
                         <React.Fragment key={i}>
                           {el.value === 1 ? (
-                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{bgcolor:'#f17272', textAlign:'center'}}>Do Not Have</TableCell>
+                            <TableCell sx={{textAlign:'center'}}><Chip label="Do not have" color="error"  onClick={(e) => handleClick(e, el?.type,el?.id)} /></TableCell>
                           ) : el.value === 2 ? (
-                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{bgcolor:'#f3f39d',textAlign:'center'}}>Need Improvement</TableCell>
+                            <TableCell sx={{textAlign:'center'}}><Chip label="Needs Imporvement" color="warning"  onClick={(e) => handleClick(e, el?.type,el?.id)} /></TableCell>
                           ) : el.value === 3 ? (
-                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{bgcolor:"#9bebbb",textAlign:'center'}}>Ready</TableCell>
+                            <TableCell sx={{textAlign:'center'}}><Chip label="Do not have" color="success" onClick={(e) => handleClick(e, el?.type,el?.id)} /></TableCell>
                           ) : (
-                            <TableCell onClick={(e) => handleClick(e, el?.type,el?.id)}>{el.value}</TableCell>
+                            <TableCell ><Chip label={el.value} onClick={(e) => handleClick(e, el?.type,el?.id)} /></TableCell>
                           )}
                         </React.Fragment>
                       ))}
@@ -172,6 +182,19 @@ const getData = async () => {
   React.useEffect(() => {
     getData();
   }, []);
+  const tHead = [
+    "Variable",
+    "Validity",
+    "Consistency",
+    "Variability",
+    "Adequate Coverage",
+    "Velocity",
+    "Harmonization",
+    "Personnel",
+    "Centralized Database",
+    "Employee Participation",
+    "Management Use",
+  ];
 if(loading) return <Loading/>
   return (
     <Stack spacing={2} sx={{textTransform:'capitalize'}}>
@@ -199,53 +222,17 @@ if(loading) return <Loading/>
             boxShadow:
               "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
             background: " linear-gradient(to bottom, pink,lightblue)",
-            // pl: "8px",
+            pl: "8px",
           }}
         >
           <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
-            <TableHead>
-              <TableRow
-                sx={{
-                  "& .css-xn32gr-MuiTableCell-root": {
-                    textAlign: "center",
-                    width: "100px",
-                  },
-                }}
-              >
-                {/* <TableCell /> */}
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Variable
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Validity
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Consistency
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Variability
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Adequate Coverage
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Velocity
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Harmonization
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Personnel
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Centralized Database
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Employee Participation
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  Management Use
-                </TableCell>
+            <TableHead sx={{height:"50px"}}>
+              <TableRow sx={{lineHeight:"50px"}}>
+                {tHead.map((val, index) => (
+                      <TableCell key={index} sx={{ fontWeight: 600}}>
+                        {val}
+                      </TableCell>
+                    ))}
               </TableRow>
             </TableHead>
             {fetchData?.modifiedData?.map((row, i) => (
