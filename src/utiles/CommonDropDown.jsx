@@ -1,4 +1,4 @@
-import { Menu, MenuItem } from "@mui/material";
+import { Box, Menu, MenuItem } from "@mui/material";
 import { instance } from "../axiosInstance/instance";
 
 function DropdownMenu({ anchorEl, setAnchorEl, getData, type, id }) {
@@ -25,7 +25,7 @@ function DropdownMenu({ anchorEl, setAnchorEl, getData, type, id }) {
     handleClose();
   };
   return (
-    <div>
+    <Box>
       <Menu
         id="dropdown-menu"
         anchorEl={anchorEl}
@@ -42,7 +42,7 @@ function DropdownMenu({ anchorEl, setAnchorEl, getData, type, id }) {
           </MenuItem>
         ))}
       </Menu>
-    </div>
+    </Box>
   );
 }
 

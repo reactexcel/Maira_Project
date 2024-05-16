@@ -24,6 +24,7 @@ import {
   setloading,
 } from "../../../redux/slices/CvSlice";
 import Loading from "../../../components/Referesh/Loading";
+import { headerData } from "../../../utiles/Data";
 
 function Row(props) {
   const { row, data } = props;
@@ -51,10 +52,8 @@ function Row(props) {
 
   return (
     <React.Fragment>
-    <TableRow>
-    <TableCell>
-      <Box
-        onClick={() => setOpen(!open)}
+    <TableRow
+    onClick={() => setOpen(!open)}
         sx={{
           "& > *": { borderBottom: "unset" },
           ":hover": {
@@ -63,17 +62,17 @@ function Row(props) {
           },
           p:2
         }}
+    >
+    <TableCell
       >
           <IconButton >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
-      </Box>
       </TableCell>
       <TableCell
-          colSpan={11}
+          colSpan={10}
           sx={{
             fontWeight: 600,
-            // fontSize: "calc(5px + 1vmin)",
           }}
         >
           {row?.headerName}
@@ -96,17 +95,6 @@ function Row(props) {
                       background: "linear-gradient(to right, pink,lightblue)",
                     }}
                   >
-                    <TableCell
-                      align="center"
-                      colSpan={11}
-                      sx={{
-                        fontWeight: 600,
-                        fontSize: "calc(6px + 1vmin)",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {row.headerName}
-                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell
@@ -179,14 +167,14 @@ function Row(props) {
                         textTransform: "capitalize",
                       }}
                     >
-                      <TableCell>{e.variableList}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{bgcolor:"lightgray",color:"#fff", fontWeight:"600"}}>{e.variableList}</TableCell>
+                      <TableCell sx={{bgcolor:"lightgray",color:"#fff", fontWeight:"600"}}>
                         {e.variableList === "Staffing Loads" && e.Definition}
                       </TableCell>
 
                       {e?.subColounms.map((e, i) => (
                         <>
-                          <TableCell key={e?.id} sx={{ bgcolor: "#f17272" }}>
+                          <TableCell key={e?.id} sx={{ bgcolor: "#f17272"}}>
                             <Stack
                               sx={{ alignItems: "center" }}
                               className="checkbox-wrapper-39"
@@ -357,40 +345,7 @@ export default function DataQualityTable() {
     };
     fetchData();
   }, []);
-  const headerData = [
-    {
-      header1: "Do Not Have",
-      header2: "Need Improvement",
-      header3: "Ready",
-      header1Data:
-        "errors are found (e.g. missing values or impossible values, like negative hours worked)",
-      header2Data:
-        "measurement error is present, (e.g. there are outliers of some occurrences that do not seem to be plausible)",
-      header3Data:
-        "the organization has validated that the data collected represents the phenomenon it purports to measure with no errors.",
-    },
-    {
-      header1: "Do Not Have",
-      header2: "Need Improvement",
-      header3: "Ready",
-      header1Data:
-        "data representing the same phenomenon are recorded differently and have different definitions",
-      header2Data:
-        "data that represent the same phenomenon are recorded differently, despite having the same definition",
-      header3Data:
-        "data representing the same phenomenon have the same definition and are recorded the same",
-    },
-    {
-      header1: "Do Not Have",
-      header2: "Need Improvement",
-      header3: "Ready",
-      header1Data: "Measures tend to get the same score all the time",
-      header2Data:
-        "the measurement is sensitive enough to measure when something out of the ordinary happens",
-      header3Data:
-        "the measure is sensitive enough to defect the differences between everything commonly occurring",
-    },
-  ];
+  
   if (loading) return <Loading />;
 
   return (
@@ -422,8 +377,8 @@ export default function DataQualityTable() {
             my: 2,
             boxShadow:
               "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
-            background: " linear-gradient(to bottom, pink,lightblue)",
-            pl: "8px",
+            // background: " linear-gradient(to bottom, pink,lightblue)",
+            // pl: "8px",
           }}
         >
           <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
@@ -457,9 +412,6 @@ export default function DataQualityTable() {
                     variant="body2"
                     sx={{ textAlign: "center", height: "45px" }}
                   >
-                    {/* Validity assesses the extent to which inferences from the
-                    data accurately represents the “real world” phenomenon
-                    targeted by the measurement. */}
                     Refers to the extent to which measures accurately represent
                     the &quot;real world&quot; phenomenon targeted.
                   </Typography>
@@ -489,8 +441,6 @@ export default function DataQualityTable() {
                     variant="body2"
                     sx={{ textAlign: "center", height: "45px" }}
                   >
-                    {/* Consistency refers to the absence of a difference, when
-                    comparing two or more variables against a definition. */}
                     Refers to the Consistency of measurement across time and
                     units
                   </Typography>
@@ -517,8 +467,6 @@ export default function DataQualityTable() {
                     variant="body2"
                     sx={{ textAlign: "center", height: "45px" }}
                   >
-                    {/* Variance is defined as the distance of a measure from the
-                    mean of the total sample of measures */}
                     Refers to the ability of a measure differences accorss time
                     and units
                   </Typography>
