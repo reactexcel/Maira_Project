@@ -20,7 +20,6 @@ import { instance } from "../../axiosInstance/instance";
 const CreatePassword = () => {
   const navigate = useNavigate();
   const [loader, setLoader] = React.useState(false);
-
   const initialValues = {
     newPassword: "",
     confirmPassword: "",

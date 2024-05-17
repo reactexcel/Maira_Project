@@ -35,7 +35,7 @@ const ResetPassword = () => {
             position: "top-right",
             autoClose: 5000,
           });
-          localStorage.setItem("token", response.pwdToken.token);
+          localStorage.setItem("token", response.data.pwdToken.token);
           formik.resetForm();
           setLoader(false);
         } else {
