@@ -109,7 +109,7 @@ function Row(props) {
                         },
                       }}
                     >
-                      <TableCell sx={{fontWeight:"600",bgcolor:"gray",color:"#fff"}}>
+                      <TableCell sx={{fontWeight:"600",bgcolor:"gray",color:"#000"}}>
                         {eItem?.variableList}
                       </TableCell>
                       {eItem?.subColounms?.map((el, i) => (
@@ -117,11 +117,11 @@ function Row(props) {
                           {el.value === 1 ? (
                             <TableCell sx={{textAlign:'center'}}><Chip label="Do not have" color="error"  onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}} /></TableCell>
                           ) : el.value === 2 ? (
-                            <TableCell sx={{textAlign:'center'}}><Chip label="Needs Imporvement" color="warning"  onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}}/></TableCell>
+                            <TableCell sx={{textAlign:'center'}}><Chip label="Needs Improvement" color="warning"  onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}}/></TableCell>
                           ) : el.value === 3 ? (
                             <TableCell sx={{textAlign:'center'}}><Chip label="Ready" color="success" onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}}/></TableCell>
-                          ) : (
-                            <TableCell sx={{textAlign:'center'}}><Chip label={el.value} onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px",textTransform:'capitalize'}} /></TableCell>
+                          ) :el.value == "FALSE" && (
+                            <TableCell sx={{textAlign:'center'}}><Chip label={"Missing"} onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px",textTransform:'capitalize'}} /></TableCell>
                           )}
                         </React.Fragment>
                       ))}

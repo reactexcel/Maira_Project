@@ -66,7 +66,13 @@ function Row(props) {
         </Typography>
       </Box>
       <Box>
-        <Collapse className="example" in={open} timeout="auto" unmountOnExit sx={{overflow:"auto"}}>
+        <Collapse
+          className="example"
+          in={open}
+          timeout="auto"
+          unmountOnExit
+          sx={{ overflow: "auto" }}
+        >
           <Box>
             <Table>
               <TableHead>
@@ -96,9 +102,20 @@ function Row(props) {
                       },
                     }}
                   >
-                    <TableCell sx={{fontWeight:"600",bgcolor:"gray",color:"#fff"}}>{eItem?.variableList}</TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "600", bgcolor: "gray", color: "#000" }}
+                    >
+                      {eItem?.variableList}
+                    </TableCell>
                     {eItem?.subColounms?.map((e, i) => (
-                      <TableCell key={i} sx={{ textAlign: "justify",fontWeight:"600",bgcolor:"lightgray" }}>
+                      <TableCell
+                        key={i}
+                        sx={{
+                          textAlign: "justify",
+                          fontWeight: "600",
+                          bgcolor: "lightgray",
+                        }}
+                      >
                         {e.value}
                       </TableCell>
                     ))}
@@ -168,13 +185,13 @@ export default function DatamatrixsummarytableBack() {
           High-quality data are foundational for analyzing and using big data to
           realize value{" "}
         </Typography>
-        <Box sx={{overflow:"hidden"}}>
+        <Box sx={{ overflow: "hidden" }}>
           {fetchData?.modifiedData?.map((row, i) => (
             <Row key={i} row={row} />
           ))}
         </Box>
         <Table>
-          <TableHead>
+          <TableBody>
             <TableRow>
               <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
                 Average
@@ -210,7 +227,7 @@ export default function DatamatrixsummarytableBack() {
                 {fetchData?.maxAppearance?.["Management Use"]}
               </TableCell>
             </TableRow>
-          </TableHead>
+          </TableBody>
         </Table>
       </Box>
     </Stack>

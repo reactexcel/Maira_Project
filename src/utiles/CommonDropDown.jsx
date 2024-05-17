@@ -5,11 +5,11 @@ function DropdownMenu({ anchorEl, setAnchorEl, getData, type, id }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const optionData = ["Ready", "Do not have", "Need improvement"];
+  const optionData = ["Ready", "Do not have", "Needs Improvement"];
   const body = {
     "Ready": "ready",
     "Do not have": "doNotHave",
-    "Need improvement": "needsImprovement",
+    "Needs Improvement": "needsImprovement",
   };
   const handleMenuItemClick = async (option) => {
     const payload = {

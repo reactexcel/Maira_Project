@@ -107,7 +107,7 @@ function Row(props) {
                     >
                       Variable List
                     </TableCell>
-                    <TableCell
+                    {/* <TableCell
                       align="center"
                       sx={{
                         bgcolor: "gray",
@@ -116,7 +116,7 @@ function Row(props) {
                       }}
                     >
                       Definition
-                    </TableCell>
+                    </TableCell> */}
 
                     <TableCell
                       colSpan={3}
@@ -164,13 +164,13 @@ function Row(props) {
                         ":hover": {
                           bgcolor: "#EDEDED",
                         },
-                        textTransform: "capitalize",
+                        // textTransform: "capitalize",
                       }}
                     >
-                      <TableCell sx={{bgcolor:"lightgray",color:"#fff", fontWeight:"600"}}>{e.variableList}</TableCell>
-                      <TableCell sx={{bgcolor:"lightgray",color:"#fff", fontWeight:"600"}}>
+                      <TableCell sx={{bgcolor:"lightgray",color:"#000", fontWeight:"600"}}>{e.variableList}</TableCell>
+                      {/* <TableCell sx={{bgcolor:"lightgray",color:"#fff", fontWeight:"600"}}>
                         {e.variableList === "Staffing Loads" && e.Definition}
-                      </TableCell>
+                      </TableCell> */}
 
                       {e?.subColounms.map((e, i) => (
                         <>
@@ -357,7 +357,7 @@ export default function DataQualityTable() {
           bgcolor: "#fff",
           borderRadius: "25px",
           boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px;",
-          textTransform: "capitalize",
+          // textTransform: "capitalize",
         }}
       >
         <Typography
@@ -383,7 +383,7 @@ export default function DataQualityTable() {
         >
           <Table aria-label="collapsible table" sx={{ bgcolor: "white" }}>
             <TableHead>
-              <TableRow sx={{ textTransform: "capitalize" }}>
+              <TableRow>
                 <TableCell >{""}</TableCell>
                 <TableCell>
                   {""}
@@ -519,7 +519,7 @@ export default function DataQualityTable() {
               <TableRow
                 sx={{
                   bgcolor: "#a7e5fbcc",
-                  textTransform: "capitalize",
+                  // textTransform: "capitalize",
                   fontSize: "0.875rem",
                 }}
               >
