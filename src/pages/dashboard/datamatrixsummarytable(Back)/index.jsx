@@ -51,8 +51,7 @@ function Row(props) {
           gap: "50px",
           py: 2,
           px: 1,
-        }}
-      >
+        }}>
         <IconButton aria-label="expand row">
           {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
@@ -60,8 +59,7 @@ function Row(props) {
           sx={{
             fontWeight: "bold",
             color: "gray",
-          }}
-        >
+          }}>
           {row?.headerName}
         </Typography>
       </Box>
@@ -71,21 +69,18 @@ function Row(props) {
           in={open}
           timeout="auto"
           unmountOnExit
-          sx={{ overflow: "auto" }}
-        >
+          sx={{ overflow: "auto" }}>
           <Box>
             <Table>
               <TableHead>
                 <TableRow
                   sx={{
                     background: "linear-gradient(to right, pink,lightblue)",
-                  }}
-                >
+                  }}>
                   {tHead.map((val, index) => (
                     <TableCell
                       key={index}
-                      sx={{ fontWeight: 600, textAlign: "center" }}
-                    >
+                      sx={{ fontWeight: 600, textAlign: "center" }}>
                       {val}
                     </TableCell>
                   ))}
@@ -100,11 +95,13 @@ function Row(props) {
                       ":hover": {
                         bgcolor: "#EDEDED",
                       },
-                    }}
-                  >
+                    }}>
                     <TableCell
-                      sx={{ fontWeight: "600", bgcolor: "gray", color: "#000" }}
-                    >
+                      sx={{
+                        fontWeight: "600",
+                        bgcolor: "gray",
+                        color: "#000",
+                      }}>
                       {eItem?.variableList}
                     </TableCell>
                     {eItem?.subColounms?.map((e, i) => (
@@ -114,8 +111,7 @@ function Row(props) {
                           textAlign: "justify",
                           fontWeight: "600",
                           bgcolor: "lightgray",
-                        }}
-                      >
+                        }}>
                         {e.value}
                       </TableCell>
                     ))}
@@ -176,14 +172,12 @@ export default function DatamatrixsummarytableBack() {
           bgcolor: "#fff",
           borderRadius: "25px",
           boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px;",
-        }}
-      >
+        }}>
         <Typography
           variant="subtitle1"
-          sx={{ fontSize: "22px", fontWeight: 600 }}
-        >
-          High-quality data are foundational for analyzing and using big data to
-          realize value{" "}
+          sx={{ fontSize: "22px", fontWeight: 600 }}>
+          Please check for accuracy and make any necessary changes to your
+          ratings:{" "}
         </Typography>
         <Box sx={{ overflow: "hidden" }}>
           {fetchData?.modifiedData?.map((row, i) => (
@@ -192,6 +186,7 @@ export default function DatamatrixsummarytableBack() {
         </Box>
         <Table>
           <TableBody>
+            
             <TableRow>
               <TableCell sx={{ fontWeight: 600, textAlign: "justify" }}>
                 Average

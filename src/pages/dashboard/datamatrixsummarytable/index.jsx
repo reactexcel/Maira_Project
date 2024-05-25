@@ -29,14 +29,14 @@ import { setData, setloading } from "../../../redux/slices/CvSlice";
 import DropdownMenu from "../../../utiles/CommonDropDown";
 
 function Row(props) {
-  const { row,getData } = props;
+  const { row, getData } = props;
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [type,setType]=React.useState(null)
-  const [id,setId]=React.useState(null)
-  const handleClick = (event,t,id) => {
+  const [type, setType] = React.useState(null);
+  const [id, setId] = React.useState(null);
+  const handleClick = (event, t, id) => {
     setAnchorEl(event.currentTarget);
-    setType(t)
+    setType(t);
     setId(id);
   };
   const tHead = [
@@ -61,78 +61,126 @@ function Row(props) {
             bgcolor: "#EDEDED",
             cursor: "pointer",
           },
-          borderBottom:"1px solid lightgray",
-          display:"flex",
-          alignItems:"center",
-          gap:"50px",
-          py:2,
-          px:1
-        }}
-      >
-          <IconButton aria-label="expand row">
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-          </IconButton>
+          borderBottom: "1px solid lightgray",
+          display: "flex",
+          alignItems: "center",
+          gap: "50px",
+          py: 2,
+          px: 1,
+        }}>
+        <IconButton aria-label="expand row">
+          {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+        </IconButton>
         <Typography
           sx={{
-            fontWeight:"bold",
-            color:"gray"
-          }}
-        >
+            fontWeight: "bold",
+            color: "gray",
+          }}>
           {row?.headerName}
         </Typography>
       </Box>
       <Box>
-          <Collapse className="example" in={open} timeout="auto" unmountOnExit sx={{overflow:"auto"}}>
-            <Box>
-              <Table>
-                <TableHead>
+        <Collapse
+          className="example"
+          in={open}
+          timeout="auto"
+          unmountOnExit
+          sx={{ overflow: "auto" }}>
+          <Box>
+            <Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    background: "linear-gradient(to right, pink,lightblue)",
+                  }}>
+                  {tHead.map((val, index) => (
+                    <TableCell
+                      key={index}
+                      sx={{ fontWeight: 600, textAlign: "center" }}>
+                      {val}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody sx={{ "& .MuiTableCell-root": { width: "200px" } }}>
+                {row?.columns?.map((eItem) => (
                   <TableRow
+                    key={eItem?.variableList}
                     sx={{
-                      background: "linear-gradient(to right, pink,lightblue)",
-                    }}
-                  >
-                     {tHead.map((val, index) => (
-                      <TableCell key={index} sx={{ fontWeight: 600,textAlign:"center" }}>
-                        {val}
-                      </TableCell>
+                      cursor: "pointer",
+                      ":hover": {
+                        bgcolor: "#EDEDED",
+                      },
+                    }}>
+                    <TableCell
+                      sx={{
+                        fontWeight: "600",
+                        bgcolor: "gray",
+                        color: "#000",
+                      }}>
+                      {eItem?.variableList}
+                    </TableCell>
+                    {eItem?.subColounms?.map((el, i) => (
+                      <React.Fragment key={i}>
+                        {el.value === 1 ? (
+                          <TableCell sx={{ textAlign: "center" }}>
+                            <Chip
+                              label="Do not have"
+                              color="error"
+                              onClick={(e) => handleClick(e, el?.type, el?.id)}
+                              sx={{ width: "120px" }}
+                            />
+                          </TableCell>
+                        ) : el.value === 2 ? (
+                          <TableCell sx={{ textAlign: "center" }}>
+                            <Chip
+                              label="Needs Improvement"
+                              color="warning"
+                              onClick={(e) => handleClick(e, el?.type, el?.id)}
+                              sx={{ width: "120px" }}
+                            />
+                          </TableCell>
+                        ) : el.value === 3 ? (
+                          <TableCell sx={{ textAlign: "center" }}>
+                            <Chip
+                              label="Ready"
+                              color="success"
+                              onClick={(e) => handleClick(e, el?.type, el?.id)}
+                              sx={{ width: "120px" }}
+                            />
+                          </TableCell>
+                        ) : (
+                          el.value == "FALSE" && (
+                            <TableCell sx={{ textAlign: "center" }}>
+                              <Chip
+                                label={"Missing"}
+                                onClick={(e) =>
+                                  handleClick(e, el?.type, el?.id)
+                                }
+                                sx={{
+                                  width: "120px",
+                                  textTransform: "capitalize",
+                                }}
+                              />
+                            </TableCell>
+                          )
+                        )}
+                      </React.Fragment>
                     ))}
                   </TableRow>
-                </TableHead>
-                <TableBody sx={{ "& .MuiTableCell-root": { width: "200px" } }}>
-                  {row?.columns?.map((eItem) => (
-                    <TableRow
-                      key={eItem?.variableList}
-                      sx={{
-                        cursor: "pointer",
-                        ":hover": {
-                          bgcolor: "#EDEDED",
-                        },
-                      }}
-                    >
-                      <TableCell sx={{fontWeight:"600",bgcolor:"gray",color:"#000"}}>
-                        {eItem?.variableList}
-                      </TableCell>
-                      {eItem?.subColounms?.map((el, i) => (
-                        <React.Fragment key={i}>
-                          {el.value === 1 ? (
-                            <TableCell sx={{textAlign:'center'}}><Chip label="Do not have" color="error"  onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}} /></TableCell>
-                          ) : el.value === 2 ? (
-                            <TableCell sx={{textAlign:'center'}}><Chip label="Needs Improvement" color="warning"  onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}}/></TableCell>
-                          ) : el.value === 3 ? (
-                            <TableCell sx={{textAlign:'center'}}><Chip label="Ready" color="success" onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px"}}/></TableCell>
-                          ) :el.value == "FALSE" && (
-                            <TableCell sx={{textAlign:'center'}}><Chip label={"Missing"} onClick={(e) => handleClick(e, el?.type,el?.id)} sx={{width:"120px",textTransform:'capitalize'}} /></TableCell>
-                          )}
-                        </React.Fragment>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Collapse>
       </Box>
-      <DropdownMenu anchorEl={anchorEl} setAnchorEl={setAnchorEl} getData={getData} type={type} id={id} />
+      <DropdownMenu
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+        getData={getData}
+        type={type}
+        id={id}
+      />
     </React.Fragment>
   );
 }
@@ -154,29 +202,29 @@ Row.propTypes = {
 };
 
 export default function Datamatrixsummarytable() {
-  const dispatch=useDispatch()
-const fetchData=useSelector((state)=>state?.CvSlice?.getData)
-const loading=useSelector((state)=>state?.CvSlice?.isLoading)
-const getData = async () => {
-  dispatch(setloading(true))
+  const dispatch = useDispatch();
+  const fetchData = useSelector((state) => state?.CvSlice?.getData);
+  const loading = useSelector((state) => state?.CvSlice?.isLoading);
+  const getData = async () => {
+    dispatch(setloading(true));
     try {
       const res = await instance.get("/api/data-quality/overview");
       if (res.status === 200) {
-        dispatch(setData(res?.data?.data))
+        dispatch(setData(res?.data?.data));
       }
     } catch (error) {
       console.log(error);
     } finally {
-      dispatch(setloading(false))
+      dispatch(setloading(false));
     }
   };
   React.useEffect(() => {
     getData();
   }, []);
- 
-if(loading) return <Loading/>
+
+  if (loading) return <Loading />;
   return (
-    <Stack spacing={2} sx={{textTransform:'capitalize',}}>
+    <Stack spacing={2} sx={{ textTransform: "capitalize" }}>
       <CardComponent text={"Data Matrix Summary"} />
       <Box
         sx={{
@@ -185,21 +233,25 @@ if(loading) return <Loading/>
           // background: " linear-gradient(to bottom, pink,lightblue)",
           borderRadius: "25px",
           boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px;",
-        }}
-      >
+        }}>
         <Typography
           variant="subtitle1"
-          sx={{ fontSize: "22px", fontWeight: 600,p:2,bgcolor:"#fff",borderRadius:"25px" }}
-        >
-          High-quality data are foundational for analyzing and using big data to
-          realize value{" "}
+          sx={{
+            fontSize: "22px",
+            fontWeight: 600,
+            p: 2,
+            bgcolor: "#fff",
+            borderRadius: "25px",
+          }}>
+          Please check for accuracy and make any necessary changes to your
+          ratings:{" "}
         </Typography>
-        <Box sx={{overflow:"hidden"}}>
-        {fetchData?.modifiedData?.map((row, i) => (
-              <Box key={i}>
-                <Row row={row} getData={getData} />
-              </Box>
-            ))}
+        <Box sx={{ overflow: "hidden" }}>
+          {fetchData?.modifiedData?.map((row, i) => (
+            <Box key={i}>
+              <Row row={row} getData={getData} />
+            </Box>
+          ))}
         </Box>
       </Box>
     </Stack>

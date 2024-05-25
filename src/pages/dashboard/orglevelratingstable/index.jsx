@@ -31,7 +31,7 @@ import Loading from "../../../components/Referesh/Loading";
 
 function Row(props) {
   const { row, data } = props;
-  const ref=React.useRef(null)
+  const ref = React.useRef(null);
   const [open, setOpen] = React.useState(false);
   const checkloading = useSelector((state) => state.CvSlice.checkLoading);
   const checkBoxId = useSelector((state) => state.CvSlice.checkBoxId);
@@ -45,15 +45,14 @@ function Row(props) {
     };
     console.log(e.current?.value);
     try {
-   await instance.post("/api/organization/rating-check", checkedData);  
-  } catch (error) {
+      await instance.post("/api/organization/rating-check", checkedData);
+    } catch (error) {
       console.log(error);
     }
     data();
     dispatch(setCheckloading(false));
-
   };
- 
+
   return (
     <React.Fragment>
       <TableRow
@@ -63,22 +62,28 @@ function Row(props) {
           ":hover": {
             bgcolor: "#EDEDED",
             cursor: "pointer",
-
           },
-        }}
-      >
-        <TableCell >
+        }}>
+        <TableCell>
           <IconButton aria-label="expand row">
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)",color:"gray"}}>
+        <TableCell
+          sx={{
+            fontWeight: 600,
+            fontSize: "calc(6px + 1vmin)",
+            color: "gray",
+          }}>
           {row?.title}
         </TableCell>
         <TableCell
           colSpan={3}
-          sx={{ fontWeight: 600, fontSize: "calc(6px + 1vmin)",color:"gray"}}
-        >
+          sx={{
+            fontWeight: 600,
+            fontSize: "calc(6px + 1vmin)",
+            color: "gray",
+          }}>
           {" "}
           {row?.description}
         </TableCell>
@@ -92,22 +97,19 @@ function Row(props) {
                 borderRadius: "25px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
-                  // textTransform:'capitalize'
-              }}
-            >
+                // textTransform:'capitalize'
+              }}>
               {row?.features?.map((features, i) => (
                 <Table key={i}>
                   <TableHead>
                     <TableRow
                       sx={{
                         background: "linear-gradient(to right, pink,lightblue)",
-                      }}
-                    >
+                      }}>
                       <TableCell
                         align="center"
                         colSpan={5}
-                        sx={{ fontWeight: 600, }}
-                      >
+                        sx={{ fontWeight: 600 }}>
                         {features?.scaleName}
                       </TableCell>
                     </TableRow>
@@ -119,17 +121,18 @@ function Row(props) {
                         ":hover": {
                           bgcolor: "#EDEDED",
                         },
-                      }}
-                    >
-                      <TableCell/>
+                      }}>
+                      <TableCell />
 
                       <TableCell>{features?.ratingScale}</TableCell>
                       <TableCell sx={{ bgcolor: "#f17272" }}>
-                        <Stack sx={{alignItems:'center',justifyContent:'center',textAlign:'center'}}>
-                          <Typography>
-                          {features?.doNotHave}
-
-                          </Typography>
+                        <Stack
+                          sx={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            textAlign: "center",
+                          }}>
+                          <Typography>{features?.doNotHave}</Typography>
                           <Stack class="checkbox-wrapper-39">
                             <label>
                               {checkloading &&
@@ -142,7 +145,7 @@ function Row(props) {
                               ) : (
                                 <>
                                   <input
-                                 ref={ref} 
+                                    ref={ref}
                                     checked={features?.check[0].doNotHave === 1}
                                     value={"doNotHave"}
                                     name={features?.id}
@@ -163,14 +166,15 @@ function Row(props) {
                         </Stack>
                       </TableCell>
                       <TableCell sx={{ bgcolor: "#f3f39d" }}>
-                        <Stack sx={{alignItems:'center',justifyContent:'center',textAlign:'center'}}>
-                          <Typography>
-
-                          {features?.needsImprovement}
-                          </Typography>
+                        <Stack
+                          sx={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            textAlign: "center",
+                          }}>
+                          <Typography>{features?.needsImprovement}</Typography>
                           <Stack className="checkbox-wrapper-39">
                             <label>
-                              
                               {checkloading &&
                               features?.id === checkBoxId.id &&
                               checkBoxId.type === "needsImprovement" ? (
@@ -181,8 +185,7 @@ function Row(props) {
                               ) : (
                                 <>
                                   <input
-                              
-                              checked={
+                                    checked={
                                       features?.check[0].needsImprovement === 1
                                     }
                                     value={"needsImprovement"}
@@ -204,12 +207,14 @@ function Row(props) {
                         </Stack>
                       </TableCell>
                       <TableCell sx={{ bgcolor: "#9bebbb" }}>
-                        <Stack sx={{alignItems:'center',justifyContent:'center',textAlign:'center'}}>
-                          <Typography>
-
-                          {features?.ready}
-                          </Typography>
-                          <Stack  class="checkbox-wrapper-39">
+                        <Stack
+                          sx={{
+                            alignItems: "center",
+                            justifyContent: "center",
+                            textAlign: "center",
+                          }}>
+                          <Typography>{features?.ready}</Typography>
+                          <Stack class="checkbox-wrapper-39">
                             <label>
                               {checkloading &&
                               features?.id === checkBoxId?.id &&
@@ -415,12 +420,10 @@ export default function OrgLevelRatingTable() {
           bgcolor: "#fff",
           borderRadius: "25px",
           boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px;",
-        }}
-      >
+        }}>
         <Typography
           variant="subtitle1"
-          sx={{ fontSize: "22px", fontWeight: 600}}
-        >
+          sx={{ fontSize: "22px", fontWeight: 600 }}>
           Rate the level&apos;s data readiness for the following organizational
           success factors:{" "}
         </Typography>
@@ -433,8 +436,7 @@ export default function OrgLevelRatingTable() {
               "rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;",
             // background: " linear-gradient(to bottom, pink,lightblue)",
             // pl: "8px",
-          }}
-        >
+          }}>
           <Table
             aria-label="collapsible table"
             sx={{
@@ -442,23 +444,27 @@ export default function OrgLevelRatingTable() {
               "& .MuiTableCell-root": {
                 width: { md: "219px", xs: "auto" },
               },
-            }}
-          >
+            }}>
             <TableHead>
-              <TableRow sx={{ bgcolor: "#a7e5fbcc"}}>
+              <TableRow sx={{ bgcolor: "#a7e5fbcc" }}>
                 <TableCell></TableCell>
-                <TableCell sx={{ fontWeight: 600,color:"#696969" }}>Rating Scale</TableCell>
-                <TableCell sx={{ fontWeight: 600,color:"#696969"}}>Do Not Have</TableCell>
-                <TableCell sx={{ fontWeight: 600,color:"#696969" }}>
+                <TableCell sx={{ fontWeight: 600, color: "#696969" }}>
+                  Rating Scale
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "#696969" }}>
+                  Do Not Have
+                </TableCell>
+                <TableCell sx={{ fontWeight: 600, color: "#696969" }}>
                   Needs Improvement
                 </TableCell>
-                <TableCell sx={{ fontWeight: 600,color:"#696969" }}>Ready</TableCell>
-                
+                <TableCell sx={{ fontWeight: 600, color: "#696969" }}>
+                  Ready
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {fetchedData?.data?.map((row) => (
-                <Row  key={row?.title} row={row} data={data} />
+                <Row key={row?.title} row={row} data={data} />
               ))}
             </TableBody>
           </Table>
@@ -471,8 +477,7 @@ export default function OrgLevelRatingTable() {
           bgcolor: "#fff",
           borderRadius: "20px",
           p: "20px",
-        }}
-      >
+        }}>
         <Typography variant="h5" sx={{ textAlign: "center" }}>
           Diagnostic Graphics
         </Typography>
@@ -482,21 +487,19 @@ export default function OrgLevelRatingTable() {
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap ",
-          }}
-        >
+          }}>
           <LineChartComp
             labels={["Adequate Coverage", "Velocity", "Harmonization"]}
             yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
             datasetsLabel={"Rules and Operations"}
             dataSet={graphState1}
           />
-            <LineChartComp
-              labels={["Employee Participation", "Management Use"]}
-              datasetsLabel={"Measurement Culture"}
-              yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
-              
-              dataSet={graphState2}
-            />
+          <LineChartComp
+            labels={["Employee Participation", "Management Use"]}
+            datasetsLabel={"Measurement Culture"}
+            yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
+            dataSet={graphState2}
+          />
           <LineChartComp
             labels={["Personnel", "Centralized Database"]}
             datasetsLabel={"Foundational Infrastructure"}
