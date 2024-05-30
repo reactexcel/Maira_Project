@@ -285,6 +285,11 @@ export default function OrgLevelRatingTable() {
   const dispatch = useDispatch();
   const checkLoading = useSelector((state) => state.CvSlice.checkLoading);
   const loading = useSelector((state) => state?.CvSlice?.isLoading);
+  // console.log("this is the data gpoing in graph", fetchedData);
+  // console.log("this is the data gpoing in graph", graphState1);
+  // console.log("this is the data gpoing in graph", graphState2);
+  // console.log("this is the data gpoing in graph", graphState3);
+
   const data = async () => {
     try {
       const res = await instance.get("/api/organization/rating");
@@ -359,7 +364,7 @@ export default function OrgLevelRatingTable() {
 
       data.forEach((item) => {
         const result = scaleStatusDecision(
-          item.scalename,
+          item.header,
           item.doNotHave,
           item.needsImprovement,
           item.ready

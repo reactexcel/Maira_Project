@@ -68,6 +68,11 @@ export default function LineChartComp({
         tension: 0.1,
         borderColor: "black",
         backgroundColor: ["yellow", "pink", "red"],
+        borderWidth: 2,
+        pointBackgroundColor: "white",
+        pointBorderColor: "black",
+        pointBorderWidth: 3,
+        pointRadius: 6,
       },
     ],
   };
@@ -77,8 +82,8 @@ export default function LineChartComp({
     scales: {
       y: {
         beginAtZero: true,
-        min: 0,
-        max: 2,
+        min: -0.1,
+        max: 2.05,
         ticks: {
           beginAtZero: true,
           stepSize: 1,
