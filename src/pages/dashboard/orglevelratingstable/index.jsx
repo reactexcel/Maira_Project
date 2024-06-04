@@ -496,7 +496,7 @@ export default function OrgLevelRatingTable() {
           <LineChartComp
             labels={["Adequate Coverage", "Velocity", "Harmonization"]}
             yLabels={["Do Not Have", "Needs Improvement", "Ready"]}
-            datasetsLabel={"Rules and Operations"}
+            datasetsLabel={"Rules and operations"}
             dataSet={graphState1}
           />
           <LineChartComp

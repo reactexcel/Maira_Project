@@ -6,7 +6,7 @@ export const headerData = [
       header1Data:
         "Errors are found (e.g. missing values or impossible values, like negative hours worked)",
       header2Data:
-        "Measurement error is present, (e.g. there are outliers of some occurrences that do not seem to be plausible)",
+        "Measurement error is present (e.g. there are outliers of some occurrences that do not seem to be plausible)",
       header3Data:
         "The organization has validated that the data collected represents the phenomenon it purports to measure with no errors.",
     },
@@ -29,6 +29,6 @@ export const headerData = [
       header2Data:
         "The measurement is sensitive enough to measure when something out of the ordinary happens",
       header3Data:
-        "The measure is sensitive enough to defect the differences between everything commonly occurring",
+        "The measure is sensitive enough to detect the differences between everything commonly occurring",
     },
   ];

@@ -1,13 +1,22 @@
 import { Box, Menu, MenuItem } from "@mui/material";
 import { instance } from "../axiosInstance/instance";
+import Cookies from "js-cookie";
 
-function DropdownMenu({ anchorEl, setAnchorEl, getData, type, id }) {
+function DropdownMenu({
+  anchorEl,
+  setAnchorEl,
+  getData,
+  id,
+  type,
+  setOpen,
+  row,
+}) {
   const handleClose = () => {
     setAnchorEl(null);
   };
   const optionData = ["Ready", "Do not have", "Needs Improvement"];
   const body = {
-    "Ready": "ready",
+    Ready: "ready",
     "Do not have": "doNotHave",
     "Needs Improvement": "needsImprovement",
   };

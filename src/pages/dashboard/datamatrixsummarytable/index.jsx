@@ -7,11 +7,16 @@
 
 // export default DataQualityTable;
 
+
+  
+
+
 import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -27,6 +32,7 @@ import { instance } from "../../../axiosInstance/instance";
 import { useDispatch, useSelector } from "react-redux";
 import { setData, setloading } from "../../../redux/slices/CvSlice";
 import DropdownMenu from "../../../utiles/CommonDropDown";
+import Cookies from "js-cookie";
 
 function Row(props) {
   const { row, getData } = props;
@@ -34,6 +40,11 @@ function Row(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [type, setType] = React.useState(null);
   const [id, setId] = React.useState(null);
+  const collapseId = Cookies.get("collapseId");
+
+
+
+
   const handleClick = (event, t, id) => {
     setAnchorEl(event.currentTarget);
     setType(t);
@@ -52,10 +63,26 @@ function Row(props) {
     "Employee Participation",
     "Management Use",
   ];
+
+
+  
+  const handleOpen = (id) => {
+    setOpen(!open);
+    Cookies.set("collapseId", id);
+  };
+
+
+  React.useEffect(() => {
+    if (collapseId == row?.id) {
+      setOpen(true);
+    }
+  }, [collapseId]);
+
+
   return (
     <React.Fragment>
       <Box
-        onClick={() => setOpen(!open)}
+        onClick={() => handleOpen(row?.id)}
         sx={{
           ":hover": {
             bgcolor: "#EDEDED",
@@ -67,7 +94,8 @@ function Row(props) {
           gap: "50px",
           py: 2,
           px: 1,
-        }}>
+        }}
+      >
         <IconButton aria-label="expand row">
           {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
@@ -75,28 +103,32 @@ function Row(props) {
           sx={{
             fontWeight: "bold",
             color: "gray",
-          }}>
+          }}
+        >
           {row?.headerName}
         </Typography>
       </Box>
       <Box>
         <Collapse
           className="example"
-          in={open}
+          in={row?.id == collapseId ? open : false}
           timeout="auto"
           unmountOnExit
-          sx={{ overflow: "auto" }}>
+          sx={{ overflow: "auto" }}
+        >
           <Box>
             <Table>
               <TableHead>
                 <TableRow
                   sx={{
                     background: "linear-gradient(to right, pink,lightblue)",
-                  }}>
+                  }}
+                >
                   {tHead.map((val, index) => (
                     <TableCell
                       key={index}
-                      sx={{ fontWeight: 600, textAlign: "center" }}>
+                      sx={{ fontWeight: 600, textAlign: "center" }}
+                    >
                       {val}
                     </TableCell>
                   ))}
@@ -111,18 +143,20 @@ function Row(props) {
                       ":hover": {
                         bgcolor: "#EDEDED",
                       },
-                    }}>
+                    }}
+                  >
                     <TableCell
                       sx={{
                         fontWeight: "600",
                         bgcolor: "gray",
                         color: "#000",
-                      }}>
+                      }}
+                    >
                       {eItem?.variableList}
                     </TableCell>
                     {eItem?.subColounms?.map((el, i) => (
                       <React.Fragment key={i}>
-                        {el.value === 1 ? (
+                        {el.value === 0 ? (
                           <TableCell sx={{ textAlign: "center" }}>
                             <Chip
                               label="Do not have"
@@ -131,7 +165,7 @@ function Row(props) {
                               sx={{ width: "120px" }}
                             />
                           </TableCell>
-                        ) : el.value === 2 ? (
+                        ) : el.value === 1 ? (
                           <TableCell sx={{ textAlign: "center" }}>
                             <Chip
                               label="Needs Improvement"
@@ -140,7 +174,7 @@ function Row(props) {
                               sx={{ width: "120px" }}
                             />
                           </TableCell>
-                        ) : el.value === 3 ? (
+                        ) : el.value === 2 ? (
                           <TableCell sx={{ textAlign: "center" }}>
                             <Chip
                               label="Ready"
@@ -180,6 +214,8 @@ function Row(props) {
         getData={getData}
         type={type}
         id={id}
+        setOpen={setOpen}
+        row={row}
       />
     </React.Fragment>
   );
@@ -224,7 +260,7 @@ export default function Datamatrixsummarytable() {
 
   if (loading) return <Loading />;
   return (
-    <Stack spacing={2} sx={{ textTransform: "capitalize" }}>
+    <Stack spacing={2}>
       <CardComponent text={"Data Matrix Summary"} />
       <Box
         sx={{
@@ -233,7 +269,8 @@ export default function Datamatrixsummarytable() {
           // background: " linear-gradient(to bottom, pink,lightblue)",
           borderRadius: "25px",
           boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px;",
-        }}>
+        }}
+      >
         <Typography
           variant="subtitle1"
           sx={{
@@ -242,7 +279,8 @@ export default function Datamatrixsummarytable() {
             p: 2,
             bgcolor: "#fff",
             borderRadius: "25px",
-          }}>
+          }}
+        >
           Please check for accuracy and make any necessary changes to your
           ratings:{" "}
         </Typography>

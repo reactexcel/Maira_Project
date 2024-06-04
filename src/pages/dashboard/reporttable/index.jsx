@@ -45,13 +45,15 @@ export default function ReportTable() {
   if (reportLoading) {
     return <Loading />;
   }
+
+
+  console.log(fetchedData,"fetchdataaaaaaaaa");
   return (
     <Box
       sx={{
         display: "flex",
         gap: 2,
         flexDirection: "column",
-        textTransform: "capitalize",
       }}
     >
       <CardComponent text={"Report"} />
@@ -67,7 +69,7 @@ export default function ReportTable() {
           variant="subtitle1"
           sx={{ fontSize: "22px", fontWeight: 600 }}
         >
-          Necessary Levels of Readiness for the Types of Analytics
+          Necessary levels of readiness for the types of analytics
         </Typography>
         <TableContainer
           component={Paper}
@@ -158,7 +160,7 @@ export default function ReportTable() {
           variant="subtitle1"
           sx={{ fontSize: "22px", fontWeight: 600, pb: 2 }}
         >
-          How ready are you to engage in these levels of analytics
+          How ready are you to engage in these levels of analytics ?
         </Typography>
         <Grid container spacing={{ xs: 2, md: 3 }}>
           {fetchedData &&

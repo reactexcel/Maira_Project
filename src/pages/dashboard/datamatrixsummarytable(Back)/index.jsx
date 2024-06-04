@@ -20,6 +20,7 @@ import { instance } from "../../../axiosInstance/instance";
 import { useDispatch, useSelector } from "react-redux";
 import { setData, setloading } from "../../../redux/slices/CvSlice";
 
+
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
@@ -143,9 +144,13 @@ Row.propTypes = {
 };
 
 export default function DatamatrixsummarytableBack() {
+ 
   const dispatch = useDispatch();
   const fetchData = useSelector((state) => state?.CvSlice?.getData);
   const loading = useSelector((state) => state?.CvSlice?.isLoading);
+
+
+
   React.useEffect(() => {
     const getData = async () => {
       dispatch(setloading(true));
@@ -162,9 +167,13 @@ export default function DatamatrixsummarytableBack() {
     };
     getData();
   }, []);
+
+
+
+
   if (loading) return <Loading />;
   return (
-    <Stack spacing={2} sx={{ textTransform: "capitalize" }}>
+    <Stack spacing={2}>
       <CardComponent text={"Data Matrix Summary- Back"} />
       <Box
         sx={{

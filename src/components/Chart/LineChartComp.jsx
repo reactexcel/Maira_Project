@@ -22,6 +22,7 @@ ChartJS.register(
   Legend
 );
 
+
 const backgroundPlugin = {
   id: "backgroundPlugin",
   beforeDraw: (chart) => {
