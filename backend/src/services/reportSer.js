@@ -36,6 +36,10 @@ module.exports.reportService = async () => {
     //   maxAppearance[type] = maxValue;
     // }
 
+    let TotalReadinessScore = 0;
+
+    let c18=0, c19=0, d18=0, d19=0, e18=0, e19=0, f18 =0, f19=0, hCol=0, iCol=0, jCol=0, kCol=0
+
     const report = {
       "Validity/Accuracy": { Weight: 0.15, Descriptive: 1, Diagnostic: 1, Predictive: 2, Prescriptive: 2, "Your Score": maxAppearance["validity"]},
       "Consistency": { Weight: 0.15, Descriptive: 1, Diagnostic: 1, Predictive: 2, Prescriptive: 2, "Your Score": maxAppearance["consistency"]},
@@ -53,19 +57,39 @@ module.exports.reportService = async () => {
 
     for (let entry in report) {
       if (report.hasOwnProperty(entry)) {
-        if(report[entry]["Your Score"] > 0){
-        overall.Descriptive = overall.Descriptive + report[entry].Descriptive !== null ? ((report[entry].Weight * report[entry].Descriptive) / report[entry]["Your Score"]).toFixed(2) : 0
-        overall.Diagnostic = overall.Diagnostic + report[entry].Diagnostic !== null ? ((report[entry].Weight * report[entry].Diagnostic) / report[entry]["Your Score"]).toFixed(2) : 0
-        overall.Predictive = overall.Predictive + report[entry].Predictive !== null ? ((report[entry].Weight * report[entry].Predictive) / report[entry]["Your Score"]).toFixed(2) : 0
-        overall.Prescriptive = overall.Prescriptive + report[entry].Prescriptive !== null ? ((report[entry].Weight * report[entry].Prescriptive) / report[entry]["Your Score"]).toFixed(2) : 0
+        if(report[entry].Descriptive !== null){
+          const temp = report[entry]["Your Score"] >= report[entry].Descriptive ? report[entry]["Your Score"] : 0;
+           hCol = hCol + temp;
         }
+        if(report[entry].Diagnostic !== null){
+           const temp = report[entry]["Your Score"] >= report[entry].Diagnostic ? report[entry]["Your Score"] : 0;
+           iCol = iCol + temp;
+        }
+        if(report[entry].Predictive !== null){
+          const temp = report[entry]["Your Score"] >= report[entry].Predictive ? report[entry]["Your Score"] : 0;
+           jCol = jCol + temp
+        }
+        if(report[entry].Prescriptive !== null){
+          const temp = report[entry]["Your Score"] >= report[entry].Prescriptive ? report[entry]["Your Score"] : 0;
+           kCol = kCol + temp
+        }
+        }
+        TotalReadinessScore = TotalReadinessScore + (report[entry]["Your Score"]*report[entry].Weight)
       }
 
-    }
+      c18 = 0.55*4, d18= 0.85*7 , e18 = 13*0.9 , f18 = 16*0.9, c19 = 0.55 * hCol, d19 = 0.85*iCol, e19 = 0.9*jCol, f19 = 0.9*kCol
 
+      TotalReadinessScore = `${((TotalReadinessScore / 2)*100).toFixed(0)}%`;
+      report["TotalReadinessScore"] = { Weight: null, Descriptive: null, Diagnostic: null, Predictive: null, Prescriptive: null, "Your Score":TotalReadinessScore};
+
+      overall.Descriptive = (c19 / c18) > 1 ? "100%": `${((c19/c18)*100).toFixed(0)}%`;
+      overall.Diagnostic = (d19 / d18) > 1 ? "100%": `${((d19/d18)*100).toFixed(0)}%`;
+      overall.Predictive = (e19 / e18) > 1 ? "100%": `${((e19/e18)*100).toFixed(0)}%`;
+      overall.Prescriptive = (f19 / f18) > 1 ? "100%":`${((f19/f18)*100).toFixed(0)}%`;
     return {...report, overall};
 
   } catch (err) {
+    console.log(err)
     throw new Error(err)
   }
 };

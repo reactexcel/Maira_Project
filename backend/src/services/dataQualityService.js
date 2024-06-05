@@ -14,6 +14,8 @@ module.exports.getDataQualityData = async () => {
     LEFT JOIN datalevelcheck AS variability ON dv.variabilityId = variability.id
          `);
 
+        //  console.log(data[0])
+
          const transformedData = {};
 
          data[0].forEach(item => {
@@ -31,6 +33,7 @@ module.exports.getDataQualityData = async () => {
              } = item;
            if (!transformedData[referenceBy]) {
              transformedData[referenceBy] = {
+               id,
                headerName: referenceBy,
                columns: []
              };
@@ -38,6 +41,7 @@ module.exports.getDataQualityData = async () => {
          
            transformedData[referenceBy].columns.push({
              variableList: variableShortDescription,
+             id:id,
              Definition: definition,
               subColounms:[{
                id:validityId,

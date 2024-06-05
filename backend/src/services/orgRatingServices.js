@@ -27,10 +27,11 @@ module.exports.getOrganizationRating = async () => {
 
             let ratingLevelData = await sqldb.query(`select * from ratinglevel where id = "${doc.ratingLevelId}"`);
             ratingLevelData = ratingLevelData[0][0];
-            let ratingLevelCheckData = await sqldb.query(`SELECT * FROM maira.ratinglevelcheck;`)
+            let ratingLevelCheckData = await sqldb.query(`select * from datalevelcheck2 where OrgLevel = "${ratingScaleData.scaleName}"`)
             ratingLevelCheckData = ratingLevelCheckData[0]
-            let check = ratingLevelCheckData.filter(item => item.ratingLevelId === ratingLevelData.id);
-            ratingLevelData.check = check
+            // console.log(ratingLevelCheckData, '///>>>>>')
+            // let check = ratingLevelCheckData.filter(item => item.ratingLevelId === ratingLevelData.id);
+            ratingLevelData.check = ratingLevelCheckData
 
 
 
@@ -42,6 +43,7 @@ module.exports.getOrganizationRating = async () => {
         );
 
         category.features = features.filter(feature => feature !== undefined);
+        // console.log(category, 'OOOOOOO')
         return category;
       })
     );
@@ -54,16 +56,20 @@ module.exports.getOrganizationRating = async () => {
 };
 
 module.exports.ratingLevelCheckSer = async (body) => {
+  // console.log(body, "ppppppkkkkkk")
   try {
     let conn = await db.connection;
+    const data = await conn.query(`select ratingscaleId from ratinglevel where id = "${body.ratingLevelId}"`)
+    // console.log(data[0][0].ratingscaleId, '////////')
+    const data1 = await conn.query(`select scaleName from ratingscale where id = "${data[0][0].ratingscaleId}"`)
     if(body.doNotHave === true)
-        await conn.query(`update ratinglevelcheck set doNotHave =true, needsImprovement = false, ready = false where ratingLevelId = "${body.ratingLevelId}"`)
+        await conn.query(`update datalevelcheck2 set doNotHave =true, needsImprovement = false, ready = false where header = "${data1[0][0].scaleName}"`)
     else if(body.needsImprovement === true)
-        await conn.query(`update ratinglevelcheck set doNotHave =false, needsImprovement = true, ready = false where ratingLevelId = "${body.ratingLevelId}"`)
+        await conn.query(`update datalevelcheck2 set doNotHave =false, needsImprovement = true, ready = false where header = "${data1[0][0].scaleName}"`)
     else if(body.ready === true)
-        await conn.query(`update ratinglevelcheck set doNotHave =false, needsImprovement = false, ready = true where ratingLevelId = "${body.ratingLevelId}"`)
+        await conn.query(`update datalevelcheck2 set doNotHave =false, needsImprovement = false, ready = true where header = "${data1[0][0].scaleName}"`)
     else 
-        await conn.query(`update ratinglevelcheck set doNotHave =false, needsImprovement = false, ready = false where ratingLevelId = "${body.ratingLevelId}"`)
+        await conn.query(`update datalevelcheck2 set doNotHave =false, needsImprovement = false, ready = false where header = "${data1[0][0].scaleName}"`)
   } catch (err) {
     throw err;
   }
@@ -74,19 +80,19 @@ module.exports.ratingGraphSer = async (body) => {
 
     let conn = await db.connection
 
-    let ratinglevelData = await conn.query(`select * from ratinglevelcheck `)
-    ratinglevelData = ratinglevelData[0]
-    let getLevelData = await Promise.all(ratinglevelData.map(async (data) => {
-      let scaleData = await conn.query(`select scaleName from ratingscale where id = "${data.ratingscaleId}"`)
-      scaleData = scaleData[0]
-      scaleData.map((e) => {
-        data.scalename = e.scaleName
+    let ratinglevelData = await conn.query(`select * from datalevelcheck2 where dataVariableListId = "0f89e588-3c14-4fe7-88fc-b7aaf53e45c5"`)
+    // ratinglevelData = ratinglevelData[0]
+    // let getLevelData = await Promise.all(ratinglevelData.map(async (data) => {
+    //   let scaleData = await conn.query(`select scaleName from ratingscale where id = "${data.ratingscaleId}"`)
+    //   scaleData = scaleData[0]
+    //   scaleData.map((e) => {
+    //     data.scalename = e.scaleName
 
-      })
-      return data
-    }))
+    //   })
+    //   return data
+    // }))
 
-    return getLevelData
+    return ratinglevelData[0]
 
 
 
