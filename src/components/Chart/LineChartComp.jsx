@@ -36,15 +36,15 @@ const backgroundPlugin = {
     ctx.save();
 
     // Light Red background (bottom third)
-    ctx.fillStyle = "rgba(255,  0, 0, 0.5)";
+    ctx.fillStyle = "#F17272";
     ctx.fillRect(left, bottom - sectionHeight, right - left, sectionHeight);
 
     // Light Yellow background (middle third)
-    ctx.fillStyle = "rgba(255, 255, 0, 0.5)";
+    ctx.fillStyle = "#F3F39D";
     ctx.fillRect(left, bottom - 2 * sectionHeight, right - left, sectionHeight);
 
     // Light Green background (top third)
-    ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+    ctx.fillStyle = "#9BEBBB";
     ctx.fillRect(left, top, right - left, sectionHeight);
 
     ctx.restore();
@@ -68,7 +68,7 @@ export default function LineChartComp({
         fill: false,
         tension: 0.1,
         borderColor: "black",
-        backgroundColor: ["yellow", "pink", "red"],
+        backgroundColor: ["#F3F39D", "#9BEBBB", "#F17272"],
         borderWidth: 2,
         pointBackgroundColor: "white",
         pointBorderColor: "black",

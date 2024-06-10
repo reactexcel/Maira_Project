@@ -160,27 +160,30 @@ function Row(props) {
                           <TableCell sx={{ textAlign: "center" }}>
                             <Chip
                               label="Do not have"
-                              color="error"
                               onClick={(e) => handleClick(e, el?.type, el?.id)}
-                              sx={{ width: "120px" }}
+                              sx={{ width: "120px",bgcolor:"#F17272", "&:hover": {
+                                bgcolor: "#c74646"
+                              } }}
                             />
                           </TableCell>
                         ) : el.value === 1 ? (
                           <TableCell sx={{ textAlign: "center" }}>
                             <Chip
                               label="Needs Improvement"
-                              color="warning"
                               onClick={(e) => handleClick(e, el?.type, el?.id)}
-                              sx={{ width: "120px" }}
+                              sx={{ width: "120px",bgcolor:"#F3F39D", "&:hover": {
+                                bgcolor: "#d1d164"
+                              }}}
                             />
                           </TableCell>
                         ) : el.value === 2 ? (
                           <TableCell sx={{ textAlign: "center" }}>
                             <Chip
                               label="Ready"
-                              color="success"
                               onClick={(e) => handleClick(e, el?.type, el?.id)}
-                              sx={{ width: "120px" }}
+                              sx={{ width: "120px",bgcolor:"#9BEBBB", "&:hover": {
+                                bgcolor: "#49ad71"
+                              }}}
                             />
                           </TableCell>
                         ) : (
