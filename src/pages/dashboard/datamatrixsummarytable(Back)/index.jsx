@@ -100,7 +100,7 @@ function Row(props) {
                     <TableCell
                       sx={{
                         fontWeight: "600",
-                        bgcolor: "gray",
+                        bgcolor: "#D3D3D3",
                         color: "#000",
                       }}>
                       {eItem?.variableList}
